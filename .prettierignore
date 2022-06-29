@@ -1,0 +1,5 @@
+target
+sdk
+programs
+tests/types
+*.json

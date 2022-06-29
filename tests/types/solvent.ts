@@ -1,0 +1,1007 @@
+export type Solvent = {
+  "version": "0.0.0",
+  "name": "solvent",
+  "instructions": [
+    {
+      "name": "newBucketV2",
+      "accounts": [
+        {
+          "name": "bucketCreator",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bucketMint",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        },
+        {
+          "name": "bucketStateBump",
+          "type": "u8"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "mintDropletV2",
+      "accounts": [
+        {
+          "name": "signerWallet",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "nftMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "signerTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solventTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solventMintFeeAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destinationDropletAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "burnDropletAndRedeemTokenV2",
+      "accounts": [
+        {
+          "name": "signerWallet",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "nftMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "solventTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destinationTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signerDropletAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "migrateBucketToV2",
+      "accounts": [
+        {
+          "name": "bucketCreator",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateOld",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        },
+        {
+          "name": "bucketStateNewBump",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "bucketState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "bucketMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "nftCollectionCreator",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bucketStateV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "bucketMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "verifiedCreators",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "BucketCreationEvent",
+      "fields": [
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "BucketMigrationEvent",
+      "fields": [
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NFTDepositInBucketEvent",
+      "fields": [
+        {
+          "name": "depositor",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "nftMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "DropletsMintEvent",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "DropletsMintFeeEvent",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "DropletBurnEvent",
+      "fields": [
+        {
+          "name": "currentOwner",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "NFTRedeemEvent",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "nftMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "CloseAccountEvent",
+      "fields": [
+        {
+          "name": "accountClosing",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "ultimateRecipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "UnsuccessfulOperationEvent",
+      "fields": [
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 300,
+      "name": "InvalidBucketSymbolError",
+      "msg": "The bucket symbol you entered is invalid."
+    },
+    {
+      "code": 301,
+      "name": "ExceededAdditionalCreatorArrayError",
+      "msg": "Only upto 5 additional creator addresses are permitted."
+    },
+    {
+      "code": 302,
+      "name": "VerifyCreatorError",
+      "msg": "Failed to verify the authenticity of the creator."
+    },
+    {
+      "code": 303,
+      "name": "UnauthorizedAccessError",
+      "msg": "Failed to authorize suitable access. Invalid credentials."
+    },
+    {
+      "code": 304,
+      "name": "NFTDepositError",
+      "msg": "Failed to execute depositing of NFTs to bucket."
+    },
+    {
+      "code": 305,
+      "name": "DropletsMintError",
+      "msg": "Failed to mint droplets in exchange of NFTs."
+    },
+    {
+      "code": 306,
+      "name": "DropletsMintFeeError",
+      "msg": "Failed to mint droplets as mint fees to Solvent platform."
+    },
+    {
+      "code": 307,
+      "name": "RedeemDropletsForNFTError",
+      "msg": "Failed to redeem the NFT in exchange of the droplet."
+    },
+    {
+      "code": 308,
+      "name": "BurnDropletsError",
+      "msg": "Failed to burn the droplet tokens."
+    },
+    {
+      "code": 309,
+      "name": "CloseAccountError",
+      "msg": "Failed to close an account on-chain."
+    }
+  ]
+};
+
+export const IDL: Solvent = {
+  "version": "0.0.0",
+  "name": "solvent",
+  "instructions": [
+    {
+      "name": "newBucketV2",
+      "accounts": [
+        {
+          "name": "bucketCreator",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bucketMint",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        },
+        {
+          "name": "bucketStateBump",
+          "type": "u8"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "mintDropletV2",
+      "accounts": [
+        {
+          "name": "signerWallet",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "nftMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "signerTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solventTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solventMintFeeAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destinationDropletAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "burnDropletAndRedeemTokenV2",
+      "accounts": [
+        {
+          "name": "signerWallet",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "nftMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "solventTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destinationTokenAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signerDropletAc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "migrateBucketToV2",
+      "accounts": [
+        {
+          "name": "bucketCreator",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "solventAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateOld",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bucketStateV2",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solventAuthorityBump",
+          "type": "u8"
+        },
+        {
+          "name": "bucketStateNewBump",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "bucketState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "bucketMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "nftCollectionCreator",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bucketStateV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "bucketMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "verifiedCreators",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "BucketCreationEvent",
+      "fields": [
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "BucketMigrationEvent",
+      "fields": [
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        },
+        {
+          "name": "symbol",
+          "type": "string",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "NFTDepositInBucketEvent",
+      "fields": [
+        {
+          "name": "depositor",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "nftMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "DropletsMintEvent",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "DropletsMintFeeEvent",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "DropletBurnEvent",
+      "fields": [
+        {
+          "name": "currentOwner",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "tokenMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "NFTRedeemEvent",
+      "fields": [
+        {
+          "name": "recipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "nftMint",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "CloseAccountEvent",
+      "fields": [
+        {
+          "name": "accountClosing",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "ultimateRecipient",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "UnsuccessfulOperationEvent",
+      "fields": [
+        {
+          "name": "msg",
+          "type": "string",
+          "index": true
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 300,
+      "name": "InvalidBucketSymbolError",
+      "msg": "The bucket symbol you entered is invalid."
+    },
+    {
+      "code": 301,
+      "name": "ExceededAdditionalCreatorArrayError",
+      "msg": "Only upto 5 additional creator addresses are permitted."
+    },
+    {
+      "code": 302,
+      "name": "VerifyCreatorError",
+      "msg": "Failed to verify the authenticity of the creator."
+    },
+    {
+      "code": 303,
+      "name": "UnauthorizedAccessError",
+      "msg": "Failed to authorize suitable access. Invalid credentials."
+    },
+    {
+      "code": 304,
+      "name": "NFTDepositError",
+      "msg": "Failed to execute depositing of NFTs to bucket."
+    },
+    {
+      "code": 305,
+      "name": "DropletsMintError",
+      "msg": "Failed to mint droplets in exchange of NFTs."
+    },
+    {
+      "code": 306,
+      "name": "DropletsMintFeeError",
+      "msg": "Failed to mint droplets as mint fees to Solvent platform."
+    },
+    {
+      "code": 307,
+      "name": "RedeemDropletsForNFTError",
+      "msg": "Failed to redeem the NFT in exchange of the droplet."
+    },
+    {
+      "code": 308,
+      "name": "BurnDropletsError",
+      "msg": "Failed to burn the droplet tokens."
+    },
+    {
+      "code": 309,
+      "name": "CloseAccountError",
+      "msg": "Failed to close an account on-chain."
+    }
+  ]
+};

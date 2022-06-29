@@ -1,0 +1,60 @@
+name: Generate SDK
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  generate-sdk:
+    name: Generate TypeScript SDK and docs
+    runs-on: ubuntu-latest
+    container: projectserum/build:v0.24.2
+    steps:
+      - name: Upgrade Git
+        run: |
+          apt-get update -y
+          apt-get install software-properties-common -y
+          add-apt-repository ppa:git-core/ppa -y
+          apt-get update -y
+          apt-get install git -y
+          git --version
+          git config --global --add safe.directory '*'
+      - name: Checkout program repo
+        uses: actions/checkout@v3
+        with:
+          path: solvent-program
+      - name: Install Node dependencies
+        run: yarn install
+        working-directory: ./solvent-program
+      - name: Checkout SDK repo
+        uses: actions/checkout@v3
+        with:
+          repository: solventprotocol/solvent-sdk
+          ref: master
+          path: solvent-sdk
+          token: ${{ secrets.CI_PAT }}
+      - name: Install Node dependencies
+        run: yarn install
+        working-directory: ./solvent-sdk
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v1
+        with:
+          working-directory: ./solvent-program
+      - name: Generate TypeScript SDK using Solita
+        run: yarn solita
+        working-directory: ./solvent-program
+      - name: Generate docs using TypeDoc
+        run: yarn typedoc
+        working-directory: ./solvent-sdk
+      - name: Bump version and publish SDK to NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          yarn ci-p
+        working-directory: ./solvent-sdk
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          cwd: ./solvent-sdk
+          default_author: github_actions

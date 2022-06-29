@@ -1,0 +1,62 @@
+name: Build
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  build:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '~build')
+    name: Format code and run tests
+    runs-on: ubuntu-latest
+    container: projectserum/build:v0.24.2
+    steps:
+      - name: Get PR details
+        uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
+      - name: Set commit status as pending
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: pending
+
+      - name: Upgrade Git
+        run: |
+          apt-get update -y
+          apt-get install software-properties-common -y
+          add-apt-repository ppa:git-core/ppa -y
+          apt-get update -y
+          apt-get install git -y
+          git --version
+          git config --global --add safe.directory '*'
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+      - name: Install Node dependencies
+        run: yarn install
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v1
+      - name: Create a new Solana keypair
+        run: solana-keygen new -s --no-bip39-passphrase
+      - name: Format and lint code
+        run: yarn format
+      - name: Copy built files to build directory
+        run: |
+          mkdir -p ./build/
+          cp ./target/deploy/solvent.so ./build/
+          cp ./target/idl/solvent.json ./build/
+          cp ./target/types/solvent.ts ./build/
+      - name: Run tests
+        run: yarn test
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+
+      - name: Set final commit status
+        uses: myrotvorets/set-commit-status-action@master
+        if: always()
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}

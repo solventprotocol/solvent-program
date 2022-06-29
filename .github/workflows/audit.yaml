@@ -1,0 +1,38 @@
+name: Audit
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  sec3-audit:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '~audit')
+    name: Run Sec3 Pro automated audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR details
+        uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
+      - name: Set commit status as pending
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: pending
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+      - name: Sec3 Pro Audit
+        continue-on-error: false
+        uses: sec3dev/pro-action@v1
+        with:
+          sec3-token: ${{ secrets.SEC3_TOKEN }}
+          path: programs/solvent
+
+      - name: Set final commit status
+        uses: myrotvorets/set-commit-status-action@master
+        if: always()
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}

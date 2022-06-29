@@ -1,0 +1,8 @@
+.anchor
+.DS_Store
+target
+docker-target
+node_modules
+programs/solvent/.coderrect
+.crates
+.coderrect
