@@ -174,7 +174,7 @@ describe("Updating staking related params", () => {
       {
         minStakingPeriodSec: new anchor.BN(100),
         cooldownPeriodSec: new anchor.BN(100),
-        unstakingFeeLamp: new anchor.BN(100),
+        unstakingFeeLamp: new anchor.BN(890880),
       }
     );
 
