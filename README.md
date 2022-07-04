@@ -15,7 +15,7 @@ Solvent is a protocol to convert the NFTs into a fixed number of fungible tokens
 
 > Solvent Protocol smart contracts are audited by the amazing team at [Otter Sec](https://osec.io/). Check out the audit report [here](https://drive.google.com/file/d/1tVe-0EQhslQxr56nOQmxqaB8BSDwJ1s1/view).
 >
-> Solvent contracts are also using [Sec3](https://sec3.dev/)'s premium auto-auditor for vulnerability checks and scans. Check out the report [here](https://sec3.dev/).
+> Solvent contracts are also using [Sec3](https://sec3.dev/)'s premium auto-auditor for vulnerability checks and scans. Check out the report [here](https://drive.google.com/file/d/1WleYAar8t2ZXRIpINjH2D8fXxuXhG4A6/view?usp=sharing).
 
 ## Protocol functionality
 
