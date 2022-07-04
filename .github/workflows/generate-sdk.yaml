@@ -9,6 +9,7 @@ jobs:
     name: Generate TypeScript SDK and docs
     runs-on: ubuntu-latest
     container: projectserum/build:v0.24.2
+
     steps:
       - name: Upgrade Git
         run: |
@@ -48,7 +49,7 @@ jobs:
         working-directory: ./solvent-sdk
       - name: Bump version and publish SDK to NPM
         run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          echo "_authToken=${NPM_TOKEN}" > ~/.npmrc
           yarn ci-p
         working-directory: ./solvent-sdk
         env:
