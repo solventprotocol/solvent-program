@@ -1,12 +1,15 @@
 [package]
-name = "solvent"
-version = "0.1.0"
-description = "Created with Anchor"
+name = "solvent-protocol"
+version = "1.0.0"
+description = "Earn yield with your NFTs and enable instant NFT trades and loans"
+license = "AGPL-3.0-only"
+homepage = "https://solvent.xyz/"
+repository = "https://github.com/solventprotocol/solvent-program/"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "solvent"
+name = "solvent_protocol"
 
 [features]
 no-entrypoint = []
