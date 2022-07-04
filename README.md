@@ -13,13 +13,9 @@ Solvent is a protocol to convert the NFTs into a fixed number of fungible tokens
 - Read our litepaper [here](https://drive.google.com/file/d/1HwybfOLGkQ_HAo5zBl2Hf19yTnz4rtQH/view).
 - NFT lockers is a functionality to mint depositor some droplets as a debt but locking that NFT so that it is not available in the open bucket. User can claim their locked NFTs by unlocking them and paying back the droplets debt + some interest within a duration. Failure to unlock the NFT within the duration specified results in locked NFT getting liquidated.
 
-
 > Solvent Protocol smart contracts are audited by the amazing team at [Otter Sec](https://osec.io/). Check out the audit report [here](https://drive.google.com/file/d/1tVe-0EQhslQxr56nOQmxqaB8BSDwJ1s1/view).
-> 
-> 
+>
 > Solvent contracts are also using [Sec3](https://sec3.dev/)'s premium auto-auditor for vulnerability checks and scans. Check out the report [here](https://sec3.dev/).
-
-
 
 ## Protocol functionality
 
