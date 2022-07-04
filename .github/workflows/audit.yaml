@@ -5,9 +5,14 @@ on:
 
 jobs:
   sec3-audit:
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '~audit')
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '~audit') &&
+      contains(fromJson('["skulltech", "mdhrumil", "exogenesys"]'), github.event.comment.user.login)
+
     name: Run Sec3 Pro automated audit
     runs-on: ubuntu-latest
+
     steps:
       - name: Get PR details
         uses: xt0rted/pull-request-comment-branch@v1

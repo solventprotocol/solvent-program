@@ -5,10 +5,15 @@ on:
 
 jobs:
   build:
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '~build')
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '~build') &&
+      contains(fromJson('["skulltech", "mdhrumil", "exogenesys"]'), github.event.comment.user.login)
+
     name: Format code and run tests
     runs-on: ubuntu-latest
     container: projectserum/build:v0.24.2
+
     steps:
       - name: Get PR details
         uses: xt0rted/pull-request-comment-branch@v1
@@ -40,12 +45,6 @@ jobs:
         run: solana-keygen new -s --no-bip39-passphrase
       - name: Format and lint code
         run: yarn format
-      - name: Copy built files to build directory
-        run: |
-          mkdir -p ./build/
-          cp ./target/deploy/solvent.so ./build/
-          cp ./target/idl/solvent.json ./build/
-          cp ./target/types/solvent.ts ./build/
       - name: Run tests
         run: yarn test
       - name: Commit changes
