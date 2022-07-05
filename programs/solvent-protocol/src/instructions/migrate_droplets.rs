@@ -19,7 +19,11 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
                 .signer_droplet_token_account_old
                 .to_account_info()
                 .clone(),
-            to: ctx.accounts.admin_droplet_token_account.to_account_info().clone(),
+            to: ctx
+                .accounts
+                .admin_droplet_token_account
+                .to_account_info()
+                .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
         },
     );

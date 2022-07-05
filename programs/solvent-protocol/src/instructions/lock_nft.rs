@@ -46,8 +46,16 @@ pub fn lock_nft(
     let nft_transfer_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info().clone(),
         token::Transfer {
-            from: ctx.accounts.signer_nft_token_account.to_account_info().clone(),
-            to: ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
+            from: ctx
+                .accounts
+                .signer_nft_token_account
+                .to_account_info()
+                .clone(),
+            to: ctx
+                .accounts
+                .solvent_nft_token_account
+                .to_account_info()
+                .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
         },
     );

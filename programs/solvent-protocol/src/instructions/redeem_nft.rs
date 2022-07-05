@@ -34,7 +34,11 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
     let transfer_nft_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info().clone(),
         token::Transfer {
-            from: ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
+            from: ctx
+                .accounts
+                .solvent_nft_token_account
+                .to_account_info()
+                .clone(),
             to: ctx
                 .accounts
                 .destination_nft_token_account
@@ -50,7 +54,11 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
     let close_nft_token_account_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info().clone(),
         token::CloseAccount {
-            account: ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
+            account: ctx
+                .accounts
+                .solvent_nft_token_account
+                .to_account_info()
+                .clone(),
             destination: ctx.accounts.signer.to_account_info().clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
         },
