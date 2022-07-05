@@ -14,7 +14,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
             mint: ctx.accounts.droplet_mint.to_account_info().clone(),
             from: ctx
                 .accounts
-                .signer_droplet_account
+                .signer_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
@@ -34,10 +34,10 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
     let transfer_nft_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info().clone(),
         token::Transfer {
-            from: ctx.accounts.solvent_token_account.to_account_info().clone(),
+            from: ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
             to: ctx
                 .accounts
-                .destination_token_account
+                .destination_nft_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
@@ -50,7 +50,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
     let close_nft_token_account_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info().clone(),
         token::CloseAccount {
-            account: ctx.accounts.solvent_token_account.to_account_info().clone(),
+            account: ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
             destination: ctx.accounts.signer.to_account_info().clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
         },
@@ -71,8 +71,8 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
         droplet_mint: ctx.accounts.droplet_mint.key(),
         nft_mint: ctx.accounts.nft_mint.key(),
         signer: ctx.accounts.signer.key(),
-        destination_token_account: ctx.accounts.destination_token_account.key(),
-        signer_droplet_account: ctx.accounts.signer_droplet_account.key()
+        destination_nft_token_account: ctx.accounts.destination_nft_token_account.key(),
+        signer_droplet_token_account: ctx.accounts.signer_droplet_token_account.key()
     });
 
     Ok(())
@@ -124,19 +124,19 @@ pub struct RedeemNft<'info> {
         mut,
         address = get_associated_token_address(solvent_authority.key, &nft_mint.key()),
     )]
-    pub solvent_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
-        constraint = destination_token_account.mint == nft_mint.key(),
+        constraint = destination_nft_token_account.mint == nft_mint.key(),
     )]
-    pub destination_token_account: Box<Account<'info, TokenAccount>>,
+    pub destination_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
-        constraint = signer_droplet_account.mint == droplet_mint.key()
+        constraint = signer_droplet_token_account.mint == droplet_mint.key()
     )]
-    pub signer_droplet_account: Box<Account<'info, TokenAccount>>,
+    pub signer_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     // Solana ecosystem program addresses
     pub token_program: Program<'info, Token>,
@@ -147,6 +147,6 @@ pub struct RedeemNftEvent {
     pub signer: Pubkey,
     pub nft_mint: Pubkey,
     pub droplet_mint: Pubkey,
-    pub signer_droplet_account: Pubkey,
-    pub destination_token_account: Pubkey,
+    pub signer_droplet_token_account: Pubkey,
+    pub destination_nft_token_account: Pubkey,
 }

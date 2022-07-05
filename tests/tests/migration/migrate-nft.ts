@@ -136,9 +136,9 @@ describe("Migrating NFTs into bucket", () => {
             signer: SOLVENT_ADMIN.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: adminNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: adminNftTokenAccount.address,
+            solventNftTokenAccount,
           })
           .signers([SOLVENT_ADMIN])
           .rpc()
@@ -220,9 +220,9 @@ describe("Migrating NFTs into bucket", () => {
           signer: randomKeypair.publicKey,
           dropletMint,
           nftMint: nftMintAddress,
-          metadata: nftMetadataAddress,
-          signerTokenAccount: userNftTokenAccount,
-          solventTokenAccount: solventNftTokenAccount,
+          nftMetadata: nftMetadataAddress,
+          signerNftTokenAccount: userNftTokenAccount,
+          solventNftTokenAccount,
         })
         .signers([randomKeypair])
         .rpc();

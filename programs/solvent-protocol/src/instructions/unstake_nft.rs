@@ -139,7 +139,7 @@ pub fn unstake_nft(ctx: Context<UnstakeNft>) -> Result<()> {
                 gem_box: ctx.accounts.gemworks_gem_box.to_account_info().clone(),
                 gem_deposit_receipt: ctx.accounts.gemworks_gdr.to_account_info().clone(),
                 gem_mint: ctx.accounts.nft_mint.to_account_info().clone(),
-                gem_destination: ctx.accounts.solvent_token_account.to_account_info().clone(),
+                gem_destination: ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
                 gem_rarity: ctx.accounts.gemworks_gem_rarity.to_account_info().clone(),
                 receiver: ctx.accounts.solvent_authority.to_account_info().clone(),
                 system_program: ctx.accounts.system_program.to_account_info().clone(),
@@ -301,7 +301,7 @@ pub struct UnstakeNft<'info> {
         mut,
         address = get_associated_token_address(solvent_authority.key, &nft_mint.key()),
     )]
-    pub solvent_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         init_if_needed,

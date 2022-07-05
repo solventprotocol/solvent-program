@@ -174,10 +174,10 @@ describe("Locking NFTs into lockers", () => {
               signer: holderKeypair.publicKey,
               dropletMint: dropletMintKeypair.publicKey,
               nftMint: nftMintAddress,
-              metadata: nftMetadataAddress,
-              signerTokenAccount: holderNftTokenAccount.address,
-              solventTokenAccount: solventNftTokenAccount,
-              destinationDropletAccount: holderDropletTokenAccount.address,
+              nftMetadata: nftMetadataAddress,
+              signerNftTokenAccount: holderNftTokenAccount.address,
+              solventNftTokenAccount,
+              destinationDropletTokenAccount: holderDropletTokenAccount.address,
             })
             .signers([holderKeypair])
             .rpc()
@@ -231,10 +231,10 @@ describe("Locking NFTs into lockers", () => {
               signer: holderKeypair.publicKey,
               dropletMint,
               nftMint: nftMintAddress,
-              metadata: nftMetadataAddress,
-              signerTokenAccount: holderNftTokenAccount.address,
-              solventTokenAccount: solventNftTokenAccount,
-              destinationDropletAccount: holderDropletTokenAccount.address,
+              nftMetadata: nftMetadataAddress,
+              signerNftTokenAccount: holderNftTokenAccount.address,
+              solventNftTokenAccount,
+              destinationDropletTokenAccount: holderDropletTokenAccount.address,
             })
             .signers([holderKeypair])
             .rpc()
@@ -330,10 +330,10 @@ describe("Locking NFTs into lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -395,10 +395,10 @@ describe("Locking NFTs into lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -465,10 +465,10 @@ describe("Locking NFTs into lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -621,10 +621,10 @@ describe("Locking NFTs into lockers", () => {
               signer: holderKeypair.publicKey,
               dropletMint: dropletMintKeypair.publicKey,
               nftMint: nftMintAddress,
-              metadata: nftMetadataAddress,
-              signerTokenAccount: holderNftTokenAccount.address,
-              solventTokenAccount: solventNftTokenAccount,
-              destinationDropletAccount: holderDropletTokenAccount.address,
+              nftMetadata: nftMetadataAddress,
+              signerNftTokenAccount: holderNftTokenAccount.address,
+              solventNftTokenAccount,
+              destinationDropletTokenAccount: holderDropletTokenAccount.address,
             })
             .signers([holderKeypair])
             .rpc()
@@ -676,10 +676,10 @@ describe("Locking NFTs into lockers", () => {
               signer: holderKeypair.publicKey,
               dropletMint,
               nftMint: nftMintAddress,
-              metadata: nftMetadataAddress,
-              signerTokenAccount: holderNftTokenAccount.address,
-              solventTokenAccount: solventNftTokenAccount,
-              destinationDropletAccount: holderDropletTokenAccount.address,
+              nftMetadata: nftMetadataAddress,
+              signerNftTokenAccount: holderNftTokenAccount.address,
+              solventNftTokenAccount: solventNftTokenAccount,
+              destinationDropletTokenAccount: holderDropletTokenAccount.address,
             })
             .signers([holderKeypair])
             .rpc()
@@ -770,10 +770,10 @@ describe("Locking NFTs into lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -916,10 +916,10 @@ describe("Locking NFTs into lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -967,10 +967,10 @@ describe("Locking NFTs into lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -1000,10 +1000,10 @@ describe("Locking NFTs into lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();

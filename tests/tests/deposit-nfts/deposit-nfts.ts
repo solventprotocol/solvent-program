@@ -156,10 +156,10 @@ describe("Depositing NFTs into bucket", () => {
               signer: holderKeypair.publicKey,
               dropletMint,
               nftMint: nftMintAddress,
-              metadata: nftMetadataAddress,
-              signerTokenAccount: holderNftTokenAccount.address,
-              solventTokenAccount: solventNftTokenAccount,
-              destinationDropletAccount: holderDropletTokenAccount.address,
+              nftMetadata: nftMetadataAddress,
+              signerNftTokenAccount: holderNftTokenAccount.address,
+              solventNftTokenAccount,
+              destinationDropletTokenAccount: holderDropletTokenAccount.address,
             })
             .signers([holderKeypair])
             .rpc()
@@ -244,10 +244,10 @@ describe("Depositing NFTs into bucket", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -309,10 +309,10 @@ describe("Depositing NFTs into bucket", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -380,10 +380,10 @@ describe("Depositing NFTs into bucket", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
@@ -524,10 +524,10 @@ describe("Depositing NFTs into bucket", () => {
               signer: holderKeypair.publicKey,
               dropletMint,
               nftMint: nftMintAddress,
-              metadata: nftMetadataAddress,
-              signerTokenAccount: holderNftTokenAccount.address,
-              solventTokenAccount: solventNftTokenAccount,
-              destinationDropletAccount: holderDropletTokenAccount.address,
+              nftMetadata: nftMetadataAddress,
+              signerNftTokenAccount: holderNftTokenAccount.address,
+              solventNftTokenAccount,
+              destinationDropletTokenAccount: holderDropletTokenAccount.address,
             })
             .signers([holderKeypair])
             .rpc()
@@ -613,10 +613,10 @@ describe("Depositing NFTs into bucket", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc();
