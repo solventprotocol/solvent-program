@@ -14,7 +14,9 @@ module.exports = async function (provider) {
   anchor.setProvider(provider);
 
   // Read the generated IDL.
-  const idl = JSON.parse(readFileSync("../target/idl/solvent.json", "utf8"));
+  const idl = JSON.parse(
+    readFileSync("../target/idl/solvent_protocol.json", "utf8")
+  );
 
   // Address of the deployed program.
   const programId = new anchor.web3.PublicKey(

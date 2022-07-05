@@ -11,7 +11,7 @@ use instructions::*;
 declare_id!("SVTy4zMgDPExf1RaJdoCo5HvuyxrxdRsqF1uf2Rcd7J");
 
 #[program]
-pub mod solvent {
+pub mod solvent_protocol {
 
     use super::*;
 

@@ -32,7 +32,7 @@ jobs:
         uses: sec3dev/pro-action@v1
         with:
           sec3-token: ${{ secrets.SEC3_TOKEN }}
-          path: programs/solvent
+          path: programs/solvent-protocol
 
       - name: Set final commit status
         uses: myrotvorets/set-commit-status-action@master
