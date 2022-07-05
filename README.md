@@ -56,29 +56,6 @@ The formula for the interest that the user ends up paying for unlocking the NFT 
 
 ### BucketStates
 
-#### BucketState
-
-PDA to store the details of an NFT collection details on-chain. Represents a unique bucket for an NFT collection.
-
-| Fields                   | Description                                                                          | Type   |
-| :----------------------- | :----------------------------------------------------------------------------------- | :----- |
-| `bump`                   | The canonical bump for the BucketState PDA                                           | u8     |
-| `droplet_mint`           | The public key address of the droplet token for the NFT collection                   | Pubkey |
-| `symbol`                 | The symbol value present in the metadata of the NFT assets                           | String |
-| `nft_collection_creator` | The public key address of the NFT creator in the metadata with verified value = true | Pubkey |
-
-#### BucketStateV2
-
-PDA to store the details of an NFT collection details on-chain. Represents a unique bucket for an NFT collection.
-<strong>What's new: </strong> A bucket of an NFT collection can have multiple verified NFT verified creators. Useful in cases where there are multiple candy machine IDs for a single collection.
-
-| Fields              | Description                                                                                     | Type          |
-| :------------------ | :---------------------------------------------------------------------------------------------- | :------------ |
-| `bump`              | The canonical bump for the BucketStateV2 PDA                                                    | u8            |
-| `droplet_mint`      | The public key address of the droplet token for the NFT collection                              | Pubkey        |
-| `symbol`            | The symbol value present in the metadata of the NFT assets                                      | String        |
-| `verified_creators` | A vector of public key addresses of the NFT creators in the metadata with verified value = true | Vec< Pubkey > |
-
 #### BucketStateV3
 
 PDA to store the details of an NFT collection details on-chain. Represents a unique bucket for an NFT collection.
