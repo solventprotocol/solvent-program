@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use ::solvent::common::*;
+    use ::solvent_protocol::common::*;
     use assert_panic::assert_panic;
     use test_case::test_case;
 

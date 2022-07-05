@@ -3,6 +3,5 @@
 target
 docker-target
 node_modules
-programs/solvent/.coderrect
 .crates
-.coderrect
+.vscode
