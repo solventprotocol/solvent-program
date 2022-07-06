@@ -20,8 +20,16 @@ pub fn stake_nft(ctx: Context<StakeNft>) -> Result<()> {
     let nft_transfer_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info().clone(),
         Transfer {
-            from: ctx.accounts.solvent_token_account.to_account_info().clone(),
-            to: ctx.accounts.farmer_token_account.to_account_info().clone(),
+            from: ctx
+                .accounts
+                .solvent_nft_token_account
+                .to_account_info()
+                .clone(),
+            to: ctx
+                .accounts
+                .farmer_nft_token_account
+                .to_account_info()
+                .clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
         },
         solvent_authority_signer_seeds,
@@ -90,7 +98,11 @@ pub fn stake_nft(ctx: Context<StakeNft>) -> Result<()> {
             gem_box: ctx.accounts.gemworks_gem_box.to_account_info().clone(),
             gem_deposit_receipt: ctx.accounts.gemworks_gdr.to_account_info().clone(),
             gem_rarity: ctx.accounts.gemworks_gem_rarity.to_account_info().clone(),
-            gem_source: ctx.accounts.farmer_token_account.to_account_info().clone(),
+            gem_source: ctx
+                .accounts
+                .farmer_nft_token_account
+                .to_account_info()
+                .clone(),
             gem_mint: ctx.accounts.nft_mint.to_account_info().clone(),
             gem_bank: ctx.accounts.gembank_program.to_account_info().clone(),
             fee_acc: ctx.accounts.gemworks_fee_account.to_account_info().clone(),
@@ -117,7 +129,11 @@ pub fn stake_nft(ctx: Context<StakeNft>) -> Result<()> {
     let close_token_account_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info().clone(),
         CloseAccount {
-            account: ctx.accounts.farmer_token_account.to_account_info().clone(),
+            account: ctx
+                .accounts
+                .farmer_nft_token_account
+                .to_account_info()
+                .clone(),
             destination: ctx.accounts.signer.to_account_info().clone(),
             authority: ctx.accounts.farmer_authority.to_account_info().clone(),
         },
@@ -192,7 +208,7 @@ pub struct StakeNft<'info> {
         mut,
         address = get_associated_token_address(solvent_authority.key, &nft_mint.key()),
     )]
-    pub solvent_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         init_if_needed,
@@ -200,7 +216,7 @@ pub struct StakeNft<'info> {
         associated_token::mint = nft_mint,
         associated_token::authority = farmer_authority,
     )]
-    pub farmer_token_account: Box<Account<'info, TokenAccount>>,
+    pub farmer_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     // Gemworks accounts
     /// CHECK:

@@ -133,10 +133,10 @@ describe("Redeeming NFTs from bucket", () => {
             signer: holderKeypair.publicKey,
             dropletMint: dropletMintKeypair.publicKey,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -183,9 +183,9 @@ describe("Redeeming NFTs from bucket", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationTokenAccount: holderNftTokenAccount.address,
-            signerDropletAccount: holderDropletTokenAccount.address,
+            solventNftTokenAccount,
+            destinationNftTokenAccount: holderNftTokenAccount.address,
+            signerDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()

@@ -16,16 +16,20 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
         token::Transfer {
             from: ctx
                 .accounts
-                .signer_droplet_account_old
+                .signer_droplet_token_account_old
                 .to_account_info()
                 .clone(),
-            to: ctx.accounts.admin_droplet_account.to_account_info().clone(),
+            to: ctx
+                .accounts
+                .admin_droplet_token_account
+                .to_account_info()
+                .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
         },
     );
     token::transfer(
         transfer_droplets_ctx,
-        ctx.accounts.signer_droplet_account_old.amount,
+        ctx.accounts.signer_droplet_token_account_old.amount,
     )?;
 
     // Get Solvent authority signer seeds
@@ -40,7 +44,7 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
             mint: ctx.accounts.droplet_mint_new.to_account_info().clone(),
             to: ctx
                 .accounts
-                .signer_droplet_account_new
+                .signer_droplet_token_account_new
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
@@ -49,14 +53,14 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
     );
     token::mint_to(
         mint_droplets_ctx,
-        ctx.accounts.signer_droplet_account_old.amount,
+        ctx.accounts.signer_droplet_token_account_old.amount,
     )?;
 
     // Emit success event
     emit!(MigrateDropletsEvent {
         droplet_mint_new: ctx.accounts.droplet_mint_new.key(),
-        signer_droplet_account_old: ctx.accounts.signer_droplet_account_old.key(),
-        signer_droplet_account_new: ctx.accounts.signer_droplet_account_new.key(),
+        signer_droplet_token_account_old: ctx.accounts.signer_droplet_token_account_old.key(),
+        signer_droplet_token_account_new: ctx.accounts.signer_droplet_token_account_new.key(),
         signer: ctx.accounts.signer.key()
     });
 
@@ -94,18 +98,18 @@ pub struct MigrateDroplets<'info> {
 
     #[account(
         mut,
-        constraint = signer_droplet_account_old.mint == droplet_mint_old.key()
+        constraint = signer_droplet_token_account_old.mint == droplet_mint_old.key()
     )]
-    pub signer_droplet_account_old: Box<Account<'info, TokenAccount>>,
+    pub signer_droplet_token_account_old: Box<Account<'info, TokenAccount>>,
 
     #[account(mut)]
     pub droplet_mint_new: Account<'info, Mint>,
 
     #[account(
         mut,
-        constraint = signer_droplet_account_new.mint == droplet_mint_new.key()
+        constraint = signer_droplet_token_account_new.mint == droplet_mint_new.key()
     )]
-    pub signer_droplet_account_new: Box<Account<'info, TokenAccount>>,
+    pub signer_droplet_token_account_new: Box<Account<'info, TokenAccount>>,
 
     #[account(
         init_if_needed,
@@ -113,7 +117,7 @@ pub struct MigrateDroplets<'info> {
         associated_token::mint = droplet_mint_old,
         associated_token::authority = solvent_admin,
     )]
-    pub admin_droplet_account: Box<Account<'info, TokenAccount>>,
+    pub admin_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     // Solana ecosystem program addresses
     pub system_program: Program<'info, System>,
@@ -126,6 +130,6 @@ pub struct MigrateDroplets<'info> {
 pub struct MigrateDropletsEvent {
     pub signer: Pubkey,
     pub droplet_mint_new: Pubkey,
-    pub signer_droplet_account_old: Pubkey,
-    pub signer_droplet_account_new: Pubkey,
+    pub signer_droplet_token_account_old: Pubkey,
+    pub signer_droplet_token_account_new: Pubkey,
 }

@@ -216,10 +216,10 @@ describe("Staking NFT", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -231,7 +231,7 @@ describe("Staking NFT", () => {
     // Looping through all the NFTs and staking them
     for (const { nftMintAddress } of nftInfos) {
       const randomKeypair = await createKeypair(provider);
-      const solventTokenAccount = await getAssociatedTokenAddress(
+      const solventNftTokenAccount = await getAssociatedTokenAddress(
         nftMintAddress,
         solventAuthorityAddress,
         true
@@ -243,7 +243,7 @@ describe("Staking NFT", () => {
           program.programId
         );
 
-      const farmerTokenAccount = await getAssociatedTokenAddress(
+      const farmerNftTokenAccount = await getAssociatedTokenAddress(
         nftMintAddress,
         farmerAuthorityAddress,
         true
@@ -262,8 +262,8 @@ describe("Staking NFT", () => {
             gemworksFarm: farm,
             gemworksFeeAccount: feeAccount,
             nftMint: nftMintAddress,
-            solventTokenAccount,
-            farmerTokenAccount,
+            solventNftTokenAccount,
+            farmerNftTokenAccount,
           })
           .signers([randomKeypair])
           .rpc()
@@ -271,7 +271,7 @@ describe("Staking NFT", () => {
 
       // Ensure solvent does not have the NFT anymore
       expect(
-        (await getAccount(provider.connection, solventTokenAccount)).amount
+        (await getAccount(provider.connection, solventNftTokenAccount)).amount
       ).to.equal(0n);
 
       // Assert farmer account has correct info

@@ -155,10 +155,10 @@ describe("Unlocking NFTs from lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint: dropletMintKeypair.publicKey,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -202,10 +202,10 @@ describe("Unlocking NFTs from lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -243,7 +243,7 @@ describe("Unlocking NFTs from lockers", () => {
 
       const holderDropletBalance = holderDropletTokenAccount.amount;
 
-      let solventTreasuryDropletAccount = await getAssociatedTokenAddress(
+      let solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
         dropletMint,
         SOLVENT_TREASURY,
         true
@@ -257,11 +257,11 @@ describe("Unlocking NFTs from lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            signerDropletAccount: holderDropletTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationTokenAccount: holderNftTokenAccount.address,
+            signerDropletTokenAccount: holderDropletTokenAccount.address,
+            solventNftTokenAccount,
+            destinationNftTokenAccount: holderNftTokenAccount.address,
             solventTreasury: SOLVENT_TREASURY,
-            solventTreasuryDropletAccount,
+            solventTreasuryDropletTokenAccount,
           })
           .signers([holderKeypair])
           .rpc()
@@ -291,7 +291,7 @@ describe("Unlocking NFTs from lockers", () => {
       // Ensure if there's droplets as interest added to the treasury account
       const solventTreasuryDropletAccountInfo = await getAccount(
         provider.connection,
-        solventTreasuryDropletAccount
+        solventTreasuryDropletTokenAccount
       );
       expect(solventTreasuryDropletAccountInfo.amount).not.equal(0n);
     }
@@ -325,7 +325,7 @@ describe("Unlocking NFTs from lockers", () => {
 
     const invalidSolventTreasury = new anchor.web3.Keypair().publicKey;
 
-    const solventTreasuryDropletAccount = await getAssociatedTokenAddress(
+    const solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
       dropletMint,
       invalidSolventTreasury
     );
@@ -338,11 +338,11 @@ describe("Unlocking NFTs from lockers", () => {
           signer: holderKeypair.publicKey,
           dropletMint,
           nftMint: nftMintAddress,
-          signerDropletAccount: holderDropletTokenAccount.address,
-          solventTokenAccount: solventNftTokenAccount,
-          destinationTokenAccount: holderNftTokenAccount.address,
+          signerDropletTokenAccount: holderDropletTokenAccount.address,
+          solventNftTokenAccount,
+          destinationNftTokenAccount: holderNftTokenAccount.address,
           solventTreasury: invalidSolventTreasury,
-          solventTreasuryDropletAccount,
+          solventTreasuryDropletTokenAccount,
         })
         .signers([holderKeypair])
         .rpc();
@@ -386,7 +386,7 @@ describe("Unlocking NFTs from lockers", () => {
       maliciousActorKeypair.publicKey
     );
 
-    const solventTreasuryDropletAccount = await getAssociatedTokenAddress(
+    const solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
       dropletMint,
       SOLVENT_TREASURY,
       true
@@ -400,11 +400,11 @@ describe("Unlocking NFTs from lockers", () => {
           signer: maliciousActorKeypair.publicKey,
           dropletMint,
           nftMint: nftMintAddress,
-          signerDropletAccount: holderDropletTokenAccount.address,
-          solventTokenAccount: solventNftTokenAccount,
-          destinationTokenAccount: holderNftTokenAccount.address,
+          signerDropletTokenAccount: holderDropletTokenAccount.address,
+          solventNftTokenAccount,
+          destinationNftTokenAccount: holderNftTokenAccount.address,
           solventTreasury: SOLVENT_TREASURY,
-          solventTreasuryDropletAccount,
+          solventTreasuryDropletTokenAccount,
         })
         .signers([maliciousActorKeypair])
         .rpc();
@@ -444,7 +444,7 @@ describe("Unlocking NFTs from lockers", () => {
       holderKeypair.publicKey
     );
 
-    const solventTreasuryDropletAccount = await getAssociatedTokenAddress(
+    const solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
       dropletMint,
       SOLVENT_TREASURY,
       true
@@ -458,11 +458,11 @@ describe("Unlocking NFTs from lockers", () => {
           signer: holderKeypair.publicKey,
           dropletMint,
           nftMint: nftMintAddress,
-          signerDropletAccount: holderDropletTokenAccount.address,
-          solventTokenAccount: solventNftTokenAccount,
-          destinationTokenAccount: holderNftTokenAccount.address,
+          signerDropletTokenAccount: holderDropletTokenAccount.address,
+          solventNftTokenAccount: solventNftTokenAccount,
+          destinationNftTokenAccount: holderNftTokenAccount.address,
           solventTreasury: SOLVENT_TREASURY,
-          solventTreasuryDropletAccount,
+          solventTreasuryDropletTokenAccount,
         })
         .signers([holderKeypair])
         .rpc();

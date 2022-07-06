@@ -156,10 +156,10 @@ describe("Liquidating expired lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint: dropletMintKeypair.publicKey,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -203,10 +203,10 @@ describe("Liquidating expired lockers", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -241,7 +241,7 @@ describe("Liquidating expired lockers", () => {
           liquidatorKeypair.publicKey
         );
 
-      let solventTreasuryDropletAccount = await getAssociatedTokenAddress(
+      let solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
         dropletMint,
         SOLVENT_TREASURY,
         true
@@ -256,10 +256,10 @@ describe("Liquidating expired lockers", () => {
               signer: liquidatorKeypair.publicKey,
               dropletMint,
               nftMint: nftMintAddress,
-              signerDropletAccount: liquidatorDropletTokenAccount.address,
-              solventTokenAccount: solventNftTokenAccount,
+              signerDropletTokenAccount: liquidatorDropletTokenAccount.address,
+              solventNftTokenAccount,
               solventTreasury: SOLVENT_TREASURY,
-              solventTreasuryDropletAccount,
+              solventTreasuryDropletTokenAccount,
             })
             .signers([liquidatorKeypair])
             .rpc()
@@ -305,11 +305,11 @@ describe("Liquidating expired lockers", () => {
       assert(liquidatorDropletTokenAccount.amount > 0);
 
       // Ensure if there's droplets as interest added to the treasury account
-      const solventTreasuryDropletAccountInfo = await getAccount(
+      const solventTreasuryDropletTokenAccountInfo = await getAccount(
         provider.connection,
-        solventTreasuryDropletAccount
+        solventTreasuryDropletTokenAccount
       );
-      expect(solventTreasuryDropletAccountInfo.amount).not.equal(0n);
+      expect(solventTreasuryDropletTokenAccountInfo.amount).not.equal(0n);
     }
   });
 
@@ -334,7 +334,7 @@ describe("Liquidating expired lockers", () => {
       liquidatorKeypair.publicKey
     );
 
-    let solventTreasuryDropletAccount = await getAssociatedTokenAddress(
+    let solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
       dropletMint,
       SOLVENT_TREASURY,
       true
@@ -348,10 +348,10 @@ describe("Liquidating expired lockers", () => {
           signer: liquidatorKeypair.publicKey,
           dropletMint,
           nftMint: nftMintAddress,
-          signerDropletAccount: liquidatorDropletTokenAccount.address,
-          solventTokenAccount: solventNftTokenAccount,
+          signerDropletTokenAccount: liquidatorDropletTokenAccount.address,
+          solventNftTokenAccount,
           solventTreasury: SOLVENT_TREASURY,
-          solventTreasuryDropletAccount,
+          solventTreasuryDropletTokenAccount,
         })
         .signers([liquidatorKeypair])
         .rpc();
@@ -387,7 +387,7 @@ describe("Liquidating expired lockers", () => {
 
     const invalidSolventTreasury = new anchor.web3.Keypair().publicKey;
 
-    const solventTreasuryDropletAccount = await getAssociatedTokenAddress(
+    const solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
       dropletMint,
       invalidSolventTreasury
     );
@@ -400,10 +400,10 @@ describe("Liquidating expired lockers", () => {
           signer: liquidatorKeypair.publicKey,
           dropletMint,
           nftMint: nftMintAddress,
-          signerDropletAccount: liquidatorDropletTokenAccount.address,
-          solventTokenAccount: solventNftTokenAccount,
+          signerDropletTokenAccount: liquidatorDropletTokenAccount.address,
+          solventNftTokenAccount,
           solventTreasury: invalidSolventTreasury,
-          solventTreasuryDropletAccount,
+          solventTreasuryDropletTokenAccount,
         })
         .signers([liquidatorKeypair])
         .rpc();

@@ -23,8 +23,16 @@ pub fn deposit_nft(
     let transfer_nft_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info().clone(),
         token::Transfer {
-            from: ctx.accounts.signer_token_account.to_account_info().clone(),
-            to: ctx.accounts.solvent_token_account.to_account_info().clone(),
+            from: ctx
+                .accounts
+                .signer_nft_token_account
+                .to_account_info()
+                .clone(),
+            to: ctx
+                .accounts
+                .solvent_nft_token_account
+                .to_account_info()
+                .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
         },
     );
@@ -42,7 +50,7 @@ pub fn deposit_nft(
             mint: ctx.accounts.droplet_mint.to_account_info().clone(),
             to: ctx
                 .accounts
-                .destination_droplet_account
+                .destination_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
@@ -67,8 +75,8 @@ pub fn deposit_nft(
         droplet_mint: ctx.accounts.droplet_mint.key(),
         nft_mint: ctx.accounts.nft_mint.key(),
         signer: ctx.accounts.signer.key(),
-        signer_token_account: ctx.accounts.signer_token_account.key(),
-        destination_droplet_account: ctx.accounts.destination_droplet_account.key()
+        signer_nft_token_account: ctx.accounts.signer_nft_token_account.key(),
+        destination_droplet_token_account: ctx.accounts.destination_droplet_token_account.key()
     });
 
     Ok(())
@@ -118,17 +126,17 @@ pub struct DepositNft<'info> {
 
     #[account(
         address = mpl_token_metadata::pda::find_metadata_account(&nft_mint.key()).0,
-        constraint = mpl_token_metadata::check_id(metadata.owner),
-        constraint = verify_collection(&metadata, &bucket_state.collection_info, whitelist_proof) @ SolventError::CollectionVerificationFailed
+        constraint = mpl_token_metadata::check_id(nft_metadata.owner),
+        constraint = verify_collection(&nft_metadata, &bucket_state.collection_info, whitelist_proof) @ SolventError::CollectionVerificationFailed
     )]
     /// CHECK: Safe because there are already enough constraints
-    pub metadata: UncheckedAccount<'info>,
+    pub nft_metadata: UncheckedAccount<'info>,
 
     #[account(
         mut,
-        constraint = signer_token_account.mint == nft_mint.key()
+        constraint = signer_nft_token_account.mint == nft_mint.key()
     )]
-    pub signer_token_account: Box<Account<'info, TokenAccount>>,
+    pub signer_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         init_if_needed,
@@ -136,13 +144,13 @@ pub struct DepositNft<'info> {
         associated_token::mint = nft_mint,
         associated_token::authority = solvent_authority,
     )]
-    pub solvent_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
-        constraint = destination_droplet_account.mint == droplet_mint.key()
+        constraint = destination_droplet_token_account.mint == droplet_mint.key()
     )]
-    pub destination_droplet_account: Box<Account<'info, TokenAccount>>,
+    pub destination_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     // Solana ecosystem program addresses
     pub token_program: Program<'info, Token>,
@@ -156,6 +164,6 @@ pub struct DepositNftEvent {
     pub signer: Pubkey,
     pub droplet_mint: Pubkey,
     pub nft_mint: Pubkey,
-    pub signer_token_account: Pubkey,
-    pub destination_droplet_account: Pubkey,
+    pub signer_nft_token_account: Pubkey,
+    pub destination_droplet_token_account: Pubkey,
 }

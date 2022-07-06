@@ -240,7 +240,7 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
           holderKeypair.publicKey
         );
 
-      const adminDropletAccount = await getAssociatedTokenAddress(
+      const adminDropletTokenAccount = await getAssociatedTokenAddress(
         dropletMintOld,
         SOLVENT_ADMIN.publicKey,
         true
@@ -255,9 +255,9 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
             solventAdmin: SOLVENT_ADMIN.publicKey,
             dropletMintOld,
             dropletMintNew,
-            signerDropletAccountOld: holderDropletTokenAccountOld.address,
-            signerDropletAccountNew: holderDropletTokenAccountNew.address,
-            adminDropletAccount,
+            signerDropletTokenAccountOld: holderDropletTokenAccountOld.address,
+            signerDropletTokenAccountNew: holderDropletTokenAccountNew.address,
+            adminDropletTokenAccount,
           })
           .signers([holderKeypair])
           .rpc()
@@ -265,7 +265,7 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
 
       // Assert Solvent received the droplets
       expect(
-        (await getAccount(provider.connection, adminDropletAccount)).amount
+        (await getAccount(provider.connection, adminDropletTokenAccount)).amount
       ).to.equal(10000000000n * BigInt(index + 1));
 
       // Assert user lost v1 droplets
@@ -327,7 +327,7 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
         maliciousActorKeypair.publicKey
       );
 
-    const adminDropletAccount = await getAssociatedTokenAddress(
+    const adminDropletTokenAccount = await getAssociatedTokenAddress(
       invalidDropletMint,
       SOLVENT_ADMIN.publicKey,
       true
@@ -343,10 +343,10 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
             solventAdmin: SOLVENT_ADMIN.publicKey,
             dropletMintOld: invalidDropletMint,
             dropletMintNew,
-            signerDropletAccountOld: maliciousActorDropletTokenAccountOld,
-            signerDropletAccountNew:
+            signerDropletTokenAccountOld: maliciousActorDropletTokenAccountOld,
+            signerDropletTokenAccountNew:
               maliciousActorDropletTokenAccountNew.address,
-            adminDropletAccount: adminDropletAccount,
+            adminDropletTokenAccount,
           })
           .signers([maliciousActorKeypair])
           .rpc()

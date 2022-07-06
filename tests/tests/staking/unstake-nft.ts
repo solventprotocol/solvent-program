@@ -8,7 +8,6 @@ import {
   NftInfo,
   SOLVENT_AUTHORITY_SEED,
   FARMER_AUTHORITY_SEED,
-  SOLVENT_TREASURY,
 } from "../common";
 import { beforeEach } from "mocha";
 import {
@@ -296,10 +295,10 @@ describe("Unstaking NFT", () => {
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftMintAddress,
-            metadata: nftMetadataAddress,
-            signerTokenAccount: holderNftTokenAccount.address,
-            solventTokenAccount: solventNftTokenAccount,
-            destinationDropletAccount: holderDropletTokenAccount.address,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
           .signers([holderKeypair])
           .rpc()
@@ -309,7 +308,7 @@ describe("Unstaking NFT", () => {
     // Looping through all the NFTs and staking them
     for (const { nftMintAddress } of nftInfos) {
       const randomKeypair = await createKeypair(provider);
-      const solventTokenAccount = await getAssociatedTokenAddress(
+      const solventNftTokenAccount = await getAssociatedTokenAddress(
         nftMintAddress,
         solventAuthorityAddress,
         true
@@ -321,7 +320,7 @@ describe("Unstaking NFT", () => {
           program.programId
         );
 
-      const farmerTokenAccount = await getAssociatedTokenAddress(
+      const farmerNftTokenAccount = await getAssociatedTokenAddress(
         nftMintAddress,
         farmerAuthorityAddress,
         true
@@ -340,8 +339,8 @@ describe("Unstaking NFT", () => {
             gemworksFarm: farm,
             gemworksFeeAccount: feeAccount,
             nftMint: nftMintAddress,
-            solventTokenAccount,
-            farmerTokenAccount,
+            solventNftTokenAccount,
+            farmerNftTokenAccount,
           })
           .signers([randomKeypair])
           .rpc()
@@ -353,7 +352,7 @@ describe("Unstaking NFT", () => {
     // Looping through all the NFTs and staking them
     for (const { nftMintAddress } of nftInfos) {
       const randomKeypair = await createKeypair(provider);
-      const solventTokenAccount = await getAssociatedTokenAddress(
+      const solventNftTokenAccount = await getAssociatedTokenAddress(
         nftMintAddress,
         solventAuthorityAddress,
         true
@@ -390,7 +389,7 @@ describe("Unstaking NFT", () => {
             gemworksFarm: farm,
             gemworksFeeAccount: feeAccount,
             nftMint: nftMintAddress,
-            solventTokenAccount,
+            solventNftTokenAccount,
             gemworksRewardAMint: rewardAMint,
             gemworksRewardBMint: rewardBMint,
             farmerRewardATokenAccount,
@@ -413,7 +412,7 @@ describe("Unstaking NFT", () => {
             gemworksFarm: farm,
             gemworksFeeAccount: feeAccount,
             nftMint: nftMintAddress,
-            solventTokenAccount,
+            solventNftTokenAccount,
             gemworksRewardAMint: rewardAMint,
             gemworksRewardBMint: rewardBMint,
             farmerRewardATokenAccount,
@@ -425,7 +424,7 @@ describe("Unstaking NFT", () => {
 
       // Ensure solvent has the NFT now
       expect(
-        (await getAccount(provider.connection, solventTokenAccount)).amount
+        (await getAccount(provider.connection, solventNftTokenAccount)).amount
       ).to.equal(1n);
     }
   });

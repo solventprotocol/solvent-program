@@ -49,7 +49,7 @@ pub fn liquidate_locker(ctx: Context<LiquidateLocker>) -> Result<()> {
             mint: ctx.accounts.droplet_mint.to_account_info().clone(),
             to: ctx
                 .accounts
-                .solvent_treasury_droplet_account
+                .solvent_treasury_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
@@ -65,7 +65,7 @@ pub fn liquidate_locker(ctx: Context<LiquidateLocker>) -> Result<()> {
             mint: ctx.accounts.droplet_mint.to_account_info().clone(),
             to: ctx
                 .accounts
-                .signer_droplet_account
+                .signer_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.solvent_authority.to_account_info().clone(),
@@ -100,8 +100,7 @@ pub fn liquidate_locker(ctx: Context<LiquidateLocker>) -> Result<()> {
         droplet_mint: ctx.accounts.droplet_mint.key(),
         nft_mint: ctx.accounts.nft_mint.key(),
         signer: ctx.accounts.signer.key(),
-        signer_droplet_account: ctx.accounts.signer_droplet_account.key(),
-        solvent_treasury: ctx.accounts.solvent_treasury.key(),
+        signer_droplet_token_account: ctx.accounts.signer_droplet_token_account.key(),
     });
 
     Ok(())
@@ -173,18 +172,18 @@ pub struct LiquidateLocker<'info> {
         associated_token::mint = droplet_mint,
         associated_token::authority = solvent_treasury,
     )]
-    pub solvent_treasury_droplet_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_treasury_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
-        constraint = signer_droplet_account.mint == droplet_mint.key()
+        constraint = signer_droplet_token_account.mint == droplet_mint.key()
     )]
-    pub signer_droplet_account: Box<Account<'info, TokenAccount>>,
+    pub signer_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         address = get_associated_token_address(solvent_authority.key, &nft_mint.key()),
     )]
-    pub solvent_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     // Solana ecosystem program addresses
     pub system_program: Program<'info, System>,
@@ -198,6 +197,5 @@ pub struct LiquidateLockerEvent {
     pub signer: Pubkey,
     pub nft_mint: Pubkey,
     pub droplet_mint: Pubkey,
-    pub signer_droplet_account: Pubkey,
-    pub solvent_treasury: Pubkey,
+    pub signer_droplet_token_account: Pubkey,
 }
