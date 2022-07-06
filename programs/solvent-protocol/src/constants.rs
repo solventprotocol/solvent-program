@@ -6,6 +6,8 @@ pub const LAMPORTS_PER_DROPLET: u64 = 100000000;
 pub const MAX_INTEREST_SCALER: u8 = 100;
 pub const LIQUIDATION_REWARD_PERCENTAGE: u8 = 20;
 pub const DROPLETS_PER_NFT: u8 = 100;
+pub const REDEEM_FEE_BASIS_POINTS: u8 = 200;
+pub const SWAP_FEE_BASIS_POINTS: u8 = 50;
 
 // Seed strings
 pub const SOLVENT_AUTHORITY_SEED: &str = "authority-seed";

@@ -1,7 +1,9 @@
 use crate::constants::*;
+use crate::errors::*;
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::get_associated_token_address;
+use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 
@@ -24,6 +26,32 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
         burn_droplets_ctx,
         DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
     )?;
+
+    // Send redeem fee to Solvent treasury
+    let fee_amount = (DROPLETS_PER_NFT as u64)
+        .checked_mul(LAMPORTS_PER_DROPLET as u64)
+        .unwrap()
+        .checked_mul(REDEEM_FEE_BASIS_POINTS as u64)
+        .unwrap()
+        .checked_div(10000)
+        .unwrap();
+    let transfer_fee_ctx = CpiContext::new(
+        ctx.accounts.token_program.to_account_info().clone(),
+        token::Transfer {
+            from: ctx
+                .accounts
+                .signer_droplet_token_account
+                .to_account_info()
+                .clone(),
+            to: ctx
+                .accounts
+                .solvent_treasury_droplet_token_account
+                .to_account_info()
+                .clone(),
+            authority: ctx.accounts.signer.to_account_info().clone(),
+        },
+    );
+    token::transfer(transfer_fee_ctx, fee_amount)?;
 
     // Get Solvent authority signer seeds
     let solvent_authority_bump = *ctx.bumps.get("solvent_authority").unwrap();
@@ -142,12 +170,30 @@ pub struct RedeemNft<'info> {
 
     #[account(
         mut,
+        address = SOLVENT_TREASURY @ SolventError::SolventTreasuryInvalid
+    )]
+    /// CHECK: Safe because there are enough constraints set
+    pub solvent_treasury: UncheckedAccount<'info>,
+
+    #[account(
+        init_if_needed,
+        payer = signer,
+        associated_token::mint = droplet_mint,
+        associated_token::authority = solvent_treasury,
+    )]
+    pub solvent_treasury_droplet_token_account: Box<Account<'info, TokenAccount>>,
+
+    #[account(
+        mut,
         constraint = signer_droplet_token_account.mint == droplet_mint.key()
     )]
     pub signer_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     // Solana ecosystem program addresses
     pub token_program: Program<'info, Token>,
+    pub system_program: Program<'info, System>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
+    pub rent: Sysvar<'info, Rent>,
 }
 
 #[event]

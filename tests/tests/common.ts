@@ -65,3 +65,5 @@ export interface NftInfo {
 }
 
 export const smbMints = smbMintStrings.map((x) => new anchor.web3.PublicKey(x));
+
+export const LAMPORTS_PER_DROPLET = 100000000n;
