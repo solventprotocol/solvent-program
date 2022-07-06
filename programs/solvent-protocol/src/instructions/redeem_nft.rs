@@ -29,6 +29,8 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
 
     // Send redeem fee to Solvent treasury
     let fee_amount = (DROPLETS_PER_NFT as u64)
+        .checked_mul(LAMPORTS_PER_DROPLET as u64)
+        .unwrap()
         .checked_mul(REDEEM_FEE_BASIS_POINTS as u64)
         .unwrap()
         .checked_div(10000)

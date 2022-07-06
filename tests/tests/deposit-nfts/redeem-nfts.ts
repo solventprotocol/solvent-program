@@ -1,5 +1,6 @@
 import * as anchor from "@project-serum/anchor";
 import {
+  getAccount,
   getAssociatedTokenAddress,
   getOrCreateAssociatedTokenAccount,
 } from "@solana/spl-token-latest";
@@ -11,6 +12,8 @@ import {
   SOLVENT_AUTHORITY_SEED,
   NftInfo,
   BUCKET_SEED,
+  SOLVENT_TREASURY,
+  LAMPORTS_PER_DROPLET,
 } from "../common";
 
 describe("Redeeming NFTs from bucket", () => {
@@ -22,6 +25,13 @@ describe("Redeeming NFTs from bucket", () => {
     [solventAuthorityAddress] = await anchor.web3.PublicKey.findProgramAddress(
       [SOLVENT_AUTHORITY_SEED],
       program.programId
+    );
+
+    await provider.connection.confirmTransaction(
+      await provider.connection.requestAirdrop(
+        SOLVENT_TREASURY,
+        10 * anchor.web3.LAMPORTS_PER_SOL
+      )
     );
   });
 
@@ -52,10 +62,11 @@ describe("Redeeming NFTs from bucket", () => {
       collectionCreatorKeypair.publicKey
     );
 
-    // Minting 3 NFTs and sending them to 3 different users
+    const holderKeypair = await createKeypair(provider);
+
+    // Minting 3 NFTs and sending them to a single user
     for (const i of Array(3)) {
       // Generate NFT creator and holder keypairs
-      const holderKeypair = await createKeypair(provider);
       creatorKeypair = await createKeypair(provider);
 
       // Creator mints an NFT and sends it to holder
@@ -146,7 +157,7 @@ describe("Redeeming NFTs from bucket", () => {
 
   it("can redeem NFTs from bucket", async () => {
     // Looping through all the NFTs and redeeming them from the bucket
-    for (const { nftMintAddress, holderKeypair } of nftInfos) {
+    for (const { nftMintAddress, holderKeypair } of nftInfos.slice(0, -1)) {
       // NFT holder's NFT account
       let holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
         provider.connection,
@@ -163,12 +174,15 @@ describe("Redeeming NFTs from bucket", () => {
       );
 
       // The holder's droplet account
-      let holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
+      const holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
         provider.connection,
         holderKeypair,
         dropletMint,
         holderKeypair.publicKey
       );
+
+      const solventTreasuryDropletTokenAccount =
+        await getAssociatedTokenAddress(dropletMint, SOLVENT_TREASURY);
 
       let bucketState = await program.account.bucketStateV3.fetch(
         bucketStateAddress
@@ -184,6 +198,8 @@ describe("Redeeming NFTs from bucket", () => {
             dropletMint,
             nftMint: nftMintAddress,
             solventNftTokenAccount,
+            solventTreasury: SOLVENT_TREASURY,
+            solventTreasuryDropletTokenAccount,
             destinationNftTokenAccount: holderNftTokenAccount.address,
             signerDropletTokenAccount: holderDropletTokenAccount.address,
           })
@@ -192,13 +208,15 @@ describe("Redeeming NFTs from bucket", () => {
       );
 
       // Ensure user burned 100 droplets
-      holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
-        dropletMint,
-        holderKeypair.publicKey
-      );
-      expect(holderDropletTokenAccount.amount).to.equal(0n);
+      expect(
+        holderDropletTokenAccount.amount -
+          (
+            await getAccount(
+              provider.connection,
+              holderDropletTokenAccount.address
+            )
+          ).amount
+      ).to.equal(102n * LAMPORTS_PER_DROPLET);
 
       // Ensure user received 1 NFT
       holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(

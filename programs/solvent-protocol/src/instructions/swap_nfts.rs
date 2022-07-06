@@ -63,6 +63,8 @@ pub fn swap_nfts(ctx: Context<SwapNfts>, _whitelist_proof: Option<Vec<[u8; 32]>>
 
     // Send swap fee to Solvent treasury
     let fee_amount = (DROPLETS_PER_NFT as u64)
+        .checked_mul(LAMPORTS_PER_DROPLET as u64)
+        .unwrap()
         .checked_mul(SWAP_FEE_BASIS_POINTS as u64)
         .unwrap()
         .checked_div(10000)
