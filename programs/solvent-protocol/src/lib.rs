@@ -117,4 +117,10 @@ pub mod solvent_protocol {
     ) -> Result<()> {
         instructions::update_revenue_distribution_params(ctx, revenue_partners)
     }
+
+    pub fn distribute_revenue<'info>(
+        ctx: Context<'_, '_, '_, 'info, DistributeRevenue<'info>>,
+    ) -> Result<()> {
+        instructions::distribute_revenue(ctx)
+    }
 }
