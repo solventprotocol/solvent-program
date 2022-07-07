@@ -67,10 +67,6 @@ pub fn distribute_revenue<'info>(
 
 #[derive(Accounts)]
 pub struct DistributeRevenue<'info> {
-    #[account(
-        mut,
-        address = SOLVENT_ADMIN @ SolventError::AdminAccessUnauthorized
-    )]
     pub signer: Signer<'info>,
 
     pub droplet_mint: Account<'info, Mint>,
