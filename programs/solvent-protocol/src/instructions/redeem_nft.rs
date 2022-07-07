@@ -1,5 +1,4 @@
 use crate::constants::*;
-use crate::errors::*;
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::get_associated_token_address;
@@ -27,7 +26,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
         DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
     )?;
 
-    // Send redeem fee to Solvent treasury
+    // Send redeem fee to RevenueDistributionParams PDA
     let fee_amount = (DROPLETS_PER_NFT as u64)
         .checked_mul(LAMPORTS_PER_DROPLET as u64)
         .unwrap()
@@ -45,7 +44,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
                 .clone(),
             to: ctx
                 .accounts
-                .solvent_treasury_droplet_token_account
+                .reveneu_distribution_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
@@ -170,18 +169,22 @@ pub struct RedeemNft<'info> {
 
     #[account(
         mut,
-        address = SOLVENT_TREASURY @ SolventError::SolventTreasuryInvalid
+        seeds = [
+            droplet_mint.key().as_ref(),
+            REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()
+        ],
+        bump = reveneu_distribution_params.bump,
+        has_one = droplet_mint,
     )]
-    /// CHECK: Safe because there are enough constraints set
-    pub solvent_treasury: UncheckedAccount<'info>,
-
+    pub reveneu_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,    
+    
     #[account(
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint,
-        associated_token::authority = solvent_treasury,
+        associated_token::authority = reveneu_distribution_params,
     )]
-    pub solvent_treasury_droplet_token_account: Box<Account<'info, TokenAccount>>,
+    pub reveneu_distribution_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,

@@ -101,3 +101,26 @@ impl MigrationState {
     // Discriminator, 1 u8, 2 Pubkeys
     pub const LEN: usize = 8 + 1 + (2 * 32);
 }
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq, Copy)]
+pub struct RevenuePartner {
+    pub address: Pubkey,
+    pub share_basis_points: u16,
+}
+
+impl RevenuePartner {
+    // 1 Pubkey, 1 u16
+    pub const LEN: usize = 32 + 2;
+}
+
+#[account]
+pub struct ReveneuDistributionParams {
+    pub bump: u8,
+    pub droplet_mint: Pubkey,
+    pub revenue_partners: Vec<RevenuePartner>
+}
+
+impl ReveneuDistributionParams {
+    // Discriminator, 1 u8, 1 Pubkey, Vec of upto 10 RevenuePartners
+    pub const LEN: usize = 8 + 1 + 32 + (4 + (10 * 32));
+}

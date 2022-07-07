@@ -12,8 +12,8 @@ import {
   SOLVENT_AUTHORITY_SEED,
   NftInfo,
   BUCKET_SEED,
-  SOLVENT_TREASURY,
   LAMPORTS_PER_DROPLET,
+  REVENUE_DISTRIBUTION_PARAMS_SEED,
 } from "../common";
 
 describe("Redeeming NFTs from bucket", () => {
@@ -26,13 +26,6 @@ describe("Redeeming NFTs from bucket", () => {
       [SOLVENT_AUTHORITY_SEED],
       program.programId
     );
-
-    await provider.connection.confirmTransaction(
-      await provider.connection.requestAirdrop(
-        SOLVENT_TREASURY,
-        10 * anchor.web3.LAMPORTS_PER_SOL
-      )
-    );
   });
 
   let dropletMint: anchor.web3.PublicKey,
@@ -41,6 +34,7 @@ describe("Redeeming NFTs from bucket", () => {
   let creatorKeypair: anchor.web3.Keypair;
 
   const nftInfos: NftInfo[] = [];
+  let revenueDistributionParamsAddress: anchor.web3.PublicKey;
 
   beforeEach(async () => {
     // An NFT enthusiast wants to create a bucket for an NFT collection
@@ -105,6 +99,19 @@ describe("Redeeming NFTs from bucket", () => {
         })
         .signers([dropletMintKeypair, bucketCreatorKeypair])
         .rpc()
+    );
+
+    [revenueDistributionParamsAddress] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [REVENUE_DISTRIBUTION_PARAMS_SEED],
+        program.programId
+      );
+
+    await provider.connection.confirmTransaction(
+      await provider.connection.requestAirdrop(
+        revenueDistributionParamsAddress,
+        890880
+      )
     );
 
     // Looping through all the NFTs and depositing them in the bucket
@@ -181,8 +188,11 @@ describe("Redeeming NFTs from bucket", () => {
         holderKeypair.publicKey
       );
 
-      const solventTreasuryDropletTokenAccount =
-        await getAssociatedTokenAddress(dropletMint, SOLVENT_TREASURY);
+      const reveneuDistributionDropletTokenAccount =
+        await getAssociatedTokenAddress(
+          dropletMint,
+          revenueDistributionParamsAddress
+        );
 
       let bucketState = await program.account.bucketStateV3.fetch(
         bucketStateAddress
@@ -198,8 +208,7 @@ describe("Redeeming NFTs from bucket", () => {
             dropletMint,
             nftMint: nftMintAddress,
             solventNftTokenAccount,
-            solventTreasury: SOLVENT_TREASURY,
-            solventTreasuryDropletTokenAccount,
+            reveneuDistributionDropletTokenAccount,
             destinationNftTokenAccount: holderNftTokenAccount.address,
             signerDropletTokenAccount: holderDropletTokenAccount.address,
           })
@@ -207,7 +216,7 @@ describe("Redeeming NFTs from bucket", () => {
           .rpc()
       );
 
-      // Ensure user burned 100 droplets
+      // Ensure user burned 102 droplets
       expect(
         holderDropletTokenAccount.amount -
           (
