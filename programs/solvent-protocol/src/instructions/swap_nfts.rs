@@ -61,7 +61,7 @@ pub fn swap_nfts(ctx: Context<SwapNfts>, _whitelist_proof: Option<Vec<[u8; 32]>>
     );
     token::transfer(transfer_nft_to_redeem_ctx, 1)?;
 
-    // Send swap fee to Solvent treasury
+    // Send swap fee to RevenueDistributionParams PDA
     let fee_amount = (DROPLETS_PER_NFT as u64)
         .checked_mul(LAMPORTS_PER_DROPLET as u64)
         .unwrap()
@@ -79,7 +79,7 @@ pub fn swap_nfts(ctx: Context<SwapNfts>, _whitelist_proof: Option<Vec<[u8; 32]>>
                 .clone(),
             to: ctx
                 .accounts
-                .solvent_treasury_droplet_token_account
+                .revenue_distribution_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
@@ -186,18 +186,22 @@ pub struct SwapNfts<'info> {
 
     #[account(
         mut,
-        address = SOLVENT_TREASURY @ SolventError::SolventTreasuryInvalid
+        seeds = [
+            droplet_mint.key().as_ref(),
+            REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()
+        ],
+        bump = revenue_distribution_params.bump,
+        has_one = droplet_mint,
     )]
-    /// CHECK: Safe because there are enough constraints set
-    pub solvent_treasury: UncheckedAccount<'info>,
+    pub revenue_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,
 
     #[account(
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint,
-        associated_token::authority = solvent_treasury,
+        associated_token::authority = revenue_distribution_params,
     )]
-    pub solvent_treasury_droplet_token_account: Box<Account<'info, TokenAccount>>,
+    pub revenue_distribution_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,

@@ -12,8 +12,10 @@ import {
   SOLVENT_AUTHORITY_SEED,
   NftInfo,
   BUCKET_SEED,
-  SOLVENT_TREASURY,
   LAMPORTS_PER_DROPLET,
+  REVENUE_DISTRIBUTION_PARAMS_SEED,
+  SOLVENT_TREASURY,
+  SOLVENT_ADMIN,
 } from "../common";
 
 describe("Redeeming NFTs from bucket", () => {
@@ -29,7 +31,7 @@ describe("Redeeming NFTs from bucket", () => {
 
     await provider.connection.confirmTransaction(
       await provider.connection.requestAirdrop(
-        SOLVENT_TREASURY,
+        SOLVENT_ADMIN.publicKey,
         10 * anchor.web3.LAMPORTS_PER_SOL
       )
     );
@@ -41,6 +43,7 @@ describe("Redeeming NFTs from bucket", () => {
   let creatorKeypair: anchor.web3.Keypair;
 
   const nftInfos: NftInfo[] = [];
+  let revenueDistributionParamsAddress: anchor.web3.PublicKey;
 
   beforeEach(async () => {
     // An NFT enthusiast wants to create a bucket for an NFT collection
@@ -106,6 +109,26 @@ describe("Redeeming NFTs from bucket", () => {
         .signers([dropletMintKeypair, bucketCreatorKeypair])
         .rpc()
     );
+
+    // Update revenue distribution params
+    await provider.connection.confirmTransaction(
+      await program.methods
+        .updateRevenueDistributionParams([
+          { address: SOLVENT_TREASURY, shareBasisPoints: 10000 },
+        ])
+        .accounts({
+          signer: SOLVENT_ADMIN.publicKey,
+          dropletMint: dropletMintKeypair.publicKey,
+        })
+        .signers([SOLVENT_ADMIN])
+        .rpc()
+    );
+
+    [revenueDistributionParamsAddress] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [dropletMint.toBuffer(), REVENUE_DISTRIBUTION_PARAMS_SEED],
+        program.programId
+      );
 
     // Looping through all the NFTs and depositing them in the bucket
     for (const {
@@ -181,8 +204,12 @@ describe("Redeeming NFTs from bucket", () => {
         holderKeypair.publicKey
       );
 
-      const solventTreasuryDropletTokenAccount =
-        await getAssociatedTokenAddress(dropletMint, SOLVENT_TREASURY);
+      const revenueDistributionDropletTokenAccount =
+        await getAssociatedTokenAddress(
+          dropletMint,
+          revenueDistributionParamsAddress,
+          true
+        );
 
       let bucketState = await program.account.bucketStateV3.fetch(
         bucketStateAddress
@@ -190,24 +217,28 @@ describe("Redeeming NFTs from bucket", () => {
       const numNftsInBucket = bucketState.numNftsInBucket;
 
       // Redeem NFT and burn droplets in the process
-      await provider.connection.confirmTransaction(
-        await program.methods
-          .redeemNft()
-          .accounts({
-            signer: holderKeypair.publicKey,
-            dropletMint,
-            nftMint: nftMintAddress,
-            solventNftTokenAccount,
-            solventTreasury: SOLVENT_TREASURY,
-            solventTreasuryDropletTokenAccount,
-            destinationNftTokenAccount: holderNftTokenAccount.address,
-            signerDropletTokenAccount: holderDropletTokenAccount.address,
-          })
-          .signers([holderKeypair])
-          .rpc()
-      );
+      try {
+        await provider.connection.confirmTransaction(
+          await program.methods
+            .redeemNft()
+            .accounts({
+              signer: holderKeypair.publicKey,
+              dropletMint,
+              nftMint: nftMintAddress,
+              solventNftTokenAccount,
+              revenueDistributionDropletTokenAccount,
+              destinationNftTokenAccount: holderNftTokenAccount.address,
+              signerDropletTokenAccount: holderDropletTokenAccount.address,
+            })
+            .signers([holderKeypair])
+            .rpc()
+        );
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
 
-      // Ensure user burned 100 droplets
+      // Ensure user burned 102 droplets
       expect(
         holderDropletTokenAccount.amount -
           (

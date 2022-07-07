@@ -14,6 +14,7 @@ pub use swap_nfts::*;
 pub use unlock_nft::*;
 pub use unstake_nft::*;
 pub use update_locking_params::*;
+pub use update_revenue_distribution_params::*;
 pub use update_staking_params::*;
 
 pub mod claim_balance;
@@ -32,4 +33,5 @@ pub mod swap_nfts;
 pub mod unlock_nft;
 pub mod unstake_nft;
 pub mod update_locking_params;
+pub mod update_revenue_distribution_params;
 pub mod update_staking_params;

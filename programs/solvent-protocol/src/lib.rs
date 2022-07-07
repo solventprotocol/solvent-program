@@ -7,6 +7,7 @@ pub mod state;
 use anchor_lang::prelude::*;
 use common::*;
 use instructions::*;
+use state::*;
 
 declare_id!("SVTy4zMgDPExf1RaJdoCo5HvuyxrxdRsqF1uf2Rcd7J");
 
@@ -108,5 +109,12 @@ pub mod solvent_protocol {
 
     pub fn claim_balance(ctx: Context<ClaimBalance>) -> Result<()> {
         instructions::claim_balance(ctx)
+    }
+
+    pub fn update_revenue_distribution_params(
+        ctx: Context<UpdateRevenueDistributionParams>,
+        revenue_partners: Vec<RevenuePartner>,
+    ) -> Result<()> {
+        instructions::update_revenue_distribution_params(ctx, revenue_partners)
     }
 }
