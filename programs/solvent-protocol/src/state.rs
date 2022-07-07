@@ -117,7 +117,7 @@ impl RevenuePartner {
 pub struct ReveneuDistributionParams {
     pub bump: u8,
     pub droplet_mint: Pubkey,
-    pub revenue_partners: Vec<RevenuePartner>
+    pub revenue_partners: Vec<RevenuePartner>,
 }
 
 impl ReveneuDistributionParams {

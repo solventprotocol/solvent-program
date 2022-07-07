@@ -4,19 +4,25 @@ use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 
-pub fn update_revenue_distribution_params(ctx: Context<UpdateRevenueDistributionParams>, revenue_partners: Vec<RevenuePartner>) -> Result<()> {
+pub fn update_revenue_distribution_params(
+    ctx: Context<UpdateRevenueDistributionParams>,
+    revenue_partners: Vec<RevenuePartner>,
+) -> Result<()> {
     // Make sure the total share is 100
     let mut share_basis_points_sum: u16 = 0;
     for revenue_partner in revenue_partners.iter() {
         share_basis_points_sum += revenue_partner.share_basis_points;
     }
-    require!(share_basis_points_sum == 10000, SolventError::RevenueDistributionParamsInvalid);
+    require!(
+        share_basis_points_sum == 10000,
+        SolventError::RevenueDistributionParamsInvalid
+    );
 
     // Store revenue partner infos
     **ctx.accounts.revenue_distribution_params = ReveneuDistributionParams{
         bump: *ctx.bumps.get("revenue_distribution_params").unwrap(),
         droplet_mint: ctx.accounts.droplet_mint.key(),
-        revenue_partners: revenue_partners.clone()
+        revenue_partners: revenue_partners.clone(),
     };
 
     // Emit success event
@@ -59,5 +65,5 @@ pub struct UpdateRevenueDistributionParams<'info> {
 pub struct UpdateRevenueDistributionParamsEvent {
     pub signer: Pubkey,
     pub droplet_mint: Pubkey,
-    pub revenue_partners: Vec<RevenuePartner>
+    pub revenue_partners: Vec<RevenuePartner>,
 }

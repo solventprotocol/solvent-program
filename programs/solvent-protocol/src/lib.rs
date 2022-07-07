@@ -111,7 +111,10 @@ pub mod solvent_protocol {
         instructions::claim_balance(ctx)
     }
 
-    pub fn update_revenue_distribution_params(ctx: Context<UpdateRevenueDistributionParams>, revenue_partners: Vec<RevenuePartner>) -> Result<()> {
+    pub fn update_revenue_distribution_params(
+        ctx: Context<UpdateRevenueDistributionParams>,
+        revenue_partners: Vec<RevenuePartner>,
+    ) -> Result<()> {
         instructions::update_revenue_distribution_params(ctx, revenue_partners)
     }
 }
