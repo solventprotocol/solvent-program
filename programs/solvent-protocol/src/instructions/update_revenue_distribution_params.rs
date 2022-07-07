@@ -13,8 +13,8 @@ pub fn update_revenue_distribution_params(ctx: Context<UpdateRevenueDistribution
     require!(share_basis_points_sum == 10000, SolventError::RevenueDistributionParamsInvalid);
 
     // Store revenue partner infos
-    **ctx.accounts.reveneu_distribution_params = ReveneuDistributionParams{
-        bump: *ctx.bumps.get("reveneu_distribution_params").unwrap(),
+    **ctx.accounts.revenue_distribution_params = ReveneuDistributionParams{
+        bump: *ctx.bumps.get("revenue_distribution_params").unwrap(),
         droplet_mint: ctx.accounts.droplet_mint.key(),
         revenue_partners: revenue_partners.clone()
     };
@@ -47,7 +47,7 @@ pub struct UpdateRevenueDistributionParams<'info> {
         space = ReveneuDistributionParams::LEN,
         payer = signer
     )]
-    pub reveneu_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,
+    pub revenue_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,
 
     pub droplet_mint: Account<'info, Mint>,
 

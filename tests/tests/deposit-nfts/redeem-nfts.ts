@@ -204,7 +204,7 @@ describe("Redeeming NFTs from bucket", () => {
         holderKeypair.publicKey
       );
 
-      const reveneuDistributionDropletTokenAccount =
+      const revenueDistributionDropletTokenAccount =
         await getAssociatedTokenAddress(
           dropletMint,
           revenueDistributionParamsAddress,
@@ -226,7 +226,7 @@ describe("Redeeming NFTs from bucket", () => {
               dropletMint,
               nftMint: nftMintAddress,
               solventNftTokenAccount,
-              reveneuDistributionDropletTokenAccount,
+              revenueDistributionDropletTokenAccount,
               destinationNftTokenAccount: holderNftTokenAccount.address,
               signerDropletTokenAccount: holderDropletTokenAccount.address,
             })

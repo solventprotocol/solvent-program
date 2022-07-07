@@ -44,7 +44,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
                 .clone(),
             to: ctx
                 .accounts
-                .reveneu_distribution_droplet_token_account
+                .revenue_distribution_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
@@ -172,18 +172,18 @@ pub struct RedeemNft<'info> {
             droplet_mint.key().as_ref(),
             REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()
         ],
-        bump = reveneu_distribution_params.bump,
+        bump = revenue_distribution_params.bump,
         has_one = droplet_mint,
     )]
-    pub reveneu_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,    
+    pub revenue_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,    
     
     #[account(
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint,
-        associated_token::authority = reveneu_distribution_params,
+        associated_token::authority = revenue_distribution_params,
     )]
-    pub reveneu_distribution_droplet_token_account: Box<Account<'info, TokenAccount>>,
+    pub revenue_distribution_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
