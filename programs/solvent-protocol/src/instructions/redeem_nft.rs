@@ -168,7 +168,6 @@ pub struct RedeemNft<'info> {
     pub destination_nft_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
-        mut,
         seeds = [
             droplet_mint.key().as_ref(),
             REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()

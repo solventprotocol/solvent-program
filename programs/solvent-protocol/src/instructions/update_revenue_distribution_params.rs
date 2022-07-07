@@ -44,7 +44,6 @@ pub struct UpdateRevenueDistributionParams<'info> {
             REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()
         ],
         bump,
-        has_one = droplet_mint,
         space = ReveneuDistributionParams::LEN,
         payer = signer
     )]
