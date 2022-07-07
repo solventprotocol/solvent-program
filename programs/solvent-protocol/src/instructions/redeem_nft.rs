@@ -175,8 +175,8 @@ pub struct RedeemNft<'info> {
         bump = reveneu_distribution_params.bump,
         has_one = droplet_mint,
     )]
-    pub reveneu_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,    
-    
+    pub reveneu_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,
+
     #[account(
         init_if_needed,
         payer = signer,
