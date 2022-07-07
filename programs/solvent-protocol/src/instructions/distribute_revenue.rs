@@ -57,11 +57,11 @@ pub fn distribute_revenue<'info>(
     }
 
     // Emit success event
-    emit!(DistributeRevenueEvent{
+    emit!(DistributeRevenueEvent {
         signer: ctx.accounts.signer.key(),
         droplet_mint: ctx.accounts.droplet_mint.key()
     });
-    
+
     Ok(())
 }
 
