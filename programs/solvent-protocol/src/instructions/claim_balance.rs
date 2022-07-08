@@ -14,7 +14,7 @@ pub fn claim_balance(ctx: Context<ClaimBalance>) -> Result<()> {
         .checked_sub(Rent::minimum_balance(&ctx.accounts.rent, 0_usize))
         .unwrap();
 
-    // Transfer lamports from Solvent authority to Solvent admin
+    // Transfer lamports from Solvent authority to Solvent treasury
     let tranfer_lamports_ix = anchor_lang::solana_program::system_instruction::transfer(
         &ctx.accounts.solvent_authority.key(),
         &ctx.accounts.solvent_treasury.key(),
@@ -44,7 +44,7 @@ pub struct ClaimBalance<'info> {
 
     #[account(
         mut,
-        address = SOLVENT_TREASURY @ SolventError::SolventTreasuryInvalid
+        address = SOLVENT_CORE_TREASURY @ SolventError::SolventTreasuryInvalid
     )]
     /// CHECK: Safe because there are enough constraints set
     pub solvent_treasury: UncheckedAccount<'info>,

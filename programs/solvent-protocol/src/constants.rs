@@ -27,7 +27,8 @@ pub const GEMWORKS_REWARD_POT_SEED: &str = "reward_pot";
 pub const MIGRATION_SEED: &str = "migration-seed";
 
 // Pubkeys
-pub const SOLVENT_TREASURY: Pubkey = pubkey!("HkjFiwUW7qnREVm2PxBg8LUrCvjExrJjyYY51wsZTUK8");
+pub const SOLVENT_CORE_TREASURY: Pubkey = pubkey!("45nueWN9Qwn5vDBmJGBLEsYvaJG6vrNmNdCyrntXDk2K");
+pub const SOLVENT_LOCKERS_TREASURY: Pubkey = pubkey!("HkjFiwUW7qnREVm2PxBg8LUrCvjExrJjyYY51wsZTUK8");
 
 #[cfg(feature = "test-ids")]
 pub const SOLVENT_ADMIN: Pubkey = pubkey!("DPnNwkEzRLxeL1k3ftkSYNgbUDaWyi37VQArW56v8xok");

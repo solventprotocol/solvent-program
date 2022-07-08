@@ -5,7 +5,7 @@ import {
   BUCKET_SEED,
   SOLVENT_ADMIN,
   DEPOSIT_SEED,
-  SOLVENT_TREASURY,
+  SOLVENT_LOCKERS_TREASURY as SOLVENT_TREASURY,
   NftInfo,
   program,
   provider,

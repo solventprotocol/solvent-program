@@ -199,7 +199,7 @@ pub struct UnlockNft<'info> {
     )]
     pub destination_nft_token_account: Box<Account<'info, TokenAccount>>,
 
-    #[account(address = SOLVENT_TREASURY @ SolventError::SolventTreasuryInvalid)]
+    #[account(address = SOLVENT_LOCKERS_TREASURY @ SolventError::SolventTreasuryInvalid)]
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_treasury: UncheckedAccount<'info>,
 

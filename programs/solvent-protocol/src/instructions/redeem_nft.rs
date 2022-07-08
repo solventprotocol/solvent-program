@@ -1,5 +1,6 @@
 use crate::constants::*;
 use crate::state::*;
+use crate::errors::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::get_associated_token_address;
 use anchor_spl::associated_token::AssociatedToken;
@@ -26,7 +27,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
         DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
     )?;
 
-    // Send redeem fee to RevenueDistributionParams PDA
+    // Send redeem fee to Solvent treasury
     let fee_amount = (DROPLETS_PER_NFT as u64)
         .checked_mul(LAMPORTS_PER_DROPLET as u64)
         .unwrap()
@@ -44,7 +45,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
                 .clone(),
             to: ctx
                 .accounts
-                .revenue_distribution_droplet_token_account
+                .solvent_treasury_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
@@ -167,23 +168,17 @@ pub struct RedeemNft<'info> {
     )]
     pub destination_nft_token_account: Box<Account<'info, TokenAccount>>,
 
-    #[account(
-        seeds = [
-            droplet_mint.key().as_ref(),
-            REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()
-        ],
-        bump = revenue_distribution_params.bump,
-        has_one = droplet_mint,
-    )]
-    pub revenue_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,
+    #[account(address = SOLVENT_CORE_TREASURY @ SolventError::SolventTreasuryInvalid)]
+    /// CHECK: Safe because there are enough constraints set
+    pub solvent_treasury: UncheckedAccount<'info>,
 
     #[account(
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint,
-        associated_token::authority = revenue_distribution_params,
+        associated_token::authority = solvent_treasury,
     )]
-    pub revenue_distribution_droplet_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_treasury_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,

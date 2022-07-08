@@ -13,8 +13,7 @@ import {
   NftInfo,
   BUCKET_SEED,
   LAMPORTS_PER_DROPLET,
-  REVENUE_DISTRIBUTION_PARAMS_SEED,
-  SOLVENT_TREASURY,
+  SOLVENT_CORE_TREASURY as SOLVENT_TREASURY,
   SOLVENT_ADMIN,
 } from "../common";
 
@@ -43,7 +42,6 @@ describe("Redeeming NFTs from bucket", () => {
   let creatorKeypair: anchor.web3.Keypair;
 
   const nftInfos: NftInfo[] = [];
-  let revenueDistributionParamsAddress: anchor.web3.PublicKey;
 
   beforeEach(async () => {
     // An NFT enthusiast wants to create a bucket for an NFT collection
@@ -109,26 +107,6 @@ describe("Redeeming NFTs from bucket", () => {
         .signers([dropletMintKeypair, bucketCreatorKeypair])
         .rpc()
     );
-
-    // Update revenue distribution params
-    await provider.connection.confirmTransaction(
-      await program.methods
-        .updateRevenueDistributionParams([
-          { address: SOLVENT_TREASURY, shareBasisPoints: 10000 },
-        ])
-        .accounts({
-          signer: SOLVENT_ADMIN.publicKey,
-          dropletMint: dropletMintKeypair.publicKey,
-        })
-        .signers([SOLVENT_ADMIN])
-        .rpc()
-    );
-
-    [revenueDistributionParamsAddress] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [dropletMint.toBuffer(), REVENUE_DISTRIBUTION_PARAMS_SEED],
-        program.programId
-      );
 
     // Looping through all the NFTs and depositing them in the bucket
     for (const {
@@ -204,12 +182,8 @@ describe("Redeeming NFTs from bucket", () => {
         holderKeypair.publicKey
       );
 
-      const revenueDistributionDropletTokenAccount =
-        await getAssociatedTokenAddress(
-          dropletMint,
-          revenueDistributionParamsAddress,
-          true
-        );
+      const solventTreasuryDropletTokenAccount =
+        await getAssociatedTokenAddress(dropletMint, SOLVENT_TREASURY, true);
 
       let bucketState = await program.account.bucketStateV3.fetch(
         bucketStateAddress
@@ -226,7 +200,8 @@ describe("Redeeming NFTs from bucket", () => {
               dropletMint,
               nftMint: nftMintAddress,
               solventNftTokenAccount,
-              revenueDistributionDropletTokenAccount,
+              solventTreasury: SOLVENT_TREASURY,
+              solventTreasuryDropletTokenAccount,
               destinationNftTokenAccount: holderNftTokenAccount.address,
               signerDropletTokenAccount: holderDropletTokenAccount.address,
             })

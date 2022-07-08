@@ -7,7 +7,7 @@ import {
   NftInfo,
   program,
   provider,
-  SOLVENT_TREASURY,
+  SOLVENT_LOCKERS_TREASURY as SOLVENT_TREASURY,
   smbMints,
 } from "../common";
 import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token-latest";
