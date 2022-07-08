@@ -1,6 +1,6 @@
 use crate::constants::*;
-use crate::state::*;
 use crate::errors::*;
+use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::get_associated_token_address;
 use anchor_spl::associated_token::AssociatedToken;
