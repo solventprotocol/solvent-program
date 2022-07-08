@@ -19,7 +19,7 @@ pub fn update_revenue_distribution_params(
     );
 
     // Store revenue partner infos
-    **ctx.accounts.revenue_distribution_params = ReveneuDistributionParams{
+    **ctx.accounts.revenue_distribution_params = ReveneuDistributionParams {
         bump: *ctx.bumps.get("revenue_distribution_params").unwrap(),
         droplet_mint: ctx.accounts.droplet_mint.key(),
         revenue_partners: revenue_partners.clone(),
@@ -29,7 +29,7 @@ pub fn update_revenue_distribution_params(
     emit!(UpdateRevenueDistributionParamsEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
         signer: ctx.accounts.signer.key(),
-        revenue_partners: revenue_partners.clone()
+        revenue_partners
     });
 
     Ok(())
