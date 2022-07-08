@@ -162,7 +162,7 @@ pub struct LiquidateLocker<'info> {
     #[account(mut)]
     pub droplet_mint: Account<'info, Mint>,
 
-    #[account(address = SOLVENT_TREASURY @ SolventError::SolventTreasuryInvalid)]
+    #[account(address = SOLVENT_LOCKERS_TREASURY @ SolventError::SolventTreasuryInvalid)]
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_treasury: UncheckedAccount<'info>,
 

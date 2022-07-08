@@ -4,7 +4,7 @@ import {
   provider,
   SOLVENT_ADMIN,
   SOLVENT_AUTHORITY_SEED,
-  SOLVENT_TREASURY,
+  SOLVENT_CORE_TREASURY as SOLVENT_TREASURY,
 } from "../common";
 import { expect } from "chai";
 

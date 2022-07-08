@@ -13,7 +13,7 @@ import {
   SOLVENT_AUTHORITY_SEED,
   NftInfo,
   SOLVENT_ADMIN,
-  SOLVENT_TREASURY,
+  SOLVENT_LOCKERS_TREASURY as SOLVENT_TREASURY,
 } from "../common";
 
 describe("Unlocking NFTs from lockers", () => {

@@ -15,7 +15,10 @@ export const REVENUE_DISTRIBUTION_PARAMS_SEED = Buffer.from(
 export const FARMER_AUTHORITY_SEED = Buffer.from("farmer-authority-seed");
 export const LOCKER_SEED = Buffer.from("locker-seed");
 export const DEPOSIT_SEED = Buffer.from("deposit-seed");
-export const SOLVENT_TREASURY = new anchor.web3.PublicKey(
+export const SOLVENT_CORE_TREASURY = new anchor.web3.PublicKey(
+  "45nueWN9Qwn5vDBmJGBLEsYvaJG6vrNmNdCyrntXDk2K"
+);
+export const SOLVENT_LOCKERS_TREASURY = new anchor.web3.PublicKey(
   "HkjFiwUW7qnREVm2PxBg8LUrCvjExrJjyYY51wsZTUK8"
 );
 // TODO: To remove after migration is done
