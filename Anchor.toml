@@ -32,7 +32,7 @@ wallet = "~/.config/solana/id.json"
 # wallet = "~/.config/solana/mainnet.json"
 
 [scripts]
-test = "yarn run ts-mocha --parallel -t 1000000 tests/**/*.ts"
+test = "yarn run ts-mocha --parallel -t 1000000 -g swap tests/**/*.ts"
 
 [features]
 seeds = true

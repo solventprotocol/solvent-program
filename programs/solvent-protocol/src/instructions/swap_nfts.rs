@@ -157,7 +157,6 @@ pub struct SwapNfts<'info> {
     )]
     pub deposit_state_for_deposit: Account<'info, DepositState>,
 
-    #[account(mut)]
     pub droplet_mint: Account<'info, Mint>,
 
     pub nft_to_deposit_mint: Account<'info, Mint>,
