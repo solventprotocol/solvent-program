@@ -128,7 +128,6 @@ pub struct DepositNft<'info> {
     #[account(
         init,
         seeds = [
-            droplet_mint.key().as_ref(),
             signer.key().as_ref(),
             SIGNER_CAN_SWAP_SEED.as_bytes()
         ],
