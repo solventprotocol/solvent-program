@@ -10,6 +10,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 // Deposit an NFT into a bucket and get droplets in exchange
 pub fn deposit_nft(
     ctx: Context<DepositNft>,
+    swap: bool,
     _whitelist_proof: Option<Vec<[u8; 32]>>,
 ) -> Result<()> {
     // Set DepositState account contents
@@ -49,24 +50,26 @@ pub fn deposit_nft(
     let solvent_authority_seeds = &[SOLVENT_AUTHORITY_SEED.as_bytes(), &[solvent_authority_bump]];
     let solvent_authority_signer_seeds = &[&solvent_authority_seeds[..]];
 
-    // Mint droplets to destination account
-    let mint_droplets_ctx = CpiContext::new_with_signer(
-        ctx.accounts.token_program.to_account_info().clone(),
-        token::MintTo {
-            mint: ctx.accounts.droplet_mint.to_account_info().clone(),
-            to: ctx
-                .accounts
-                .destination_droplet_token_account
-                .to_account_info()
-                .clone(),
-            authority: ctx.accounts.solvent_authority.to_account_info().clone(),
-        },
-        solvent_authority_signer_seeds,
-    );
-    token::mint_to(
-        mint_droplets_ctx,
-        DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
-    )?;
+    if !swap {
+        // Mint droplets to destination account
+        let mint_droplets_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info().clone(),
+            token::MintTo {
+                mint: ctx.accounts.droplet_mint.to_account_info().clone(),
+                to: ctx
+                    .accounts
+                    .destination_droplet_token_account
+                    .to_account_info()
+                    .clone(),
+                authority: ctx.accounts.solvent_authority.to_account_info().clone(),
+            },
+            solvent_authority_signer_seeds,
+        );
+        token::mint_to(
+            mint_droplets_ctx,
+            DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
+        )?;
+    }
 
     // Increment counter
     ctx.accounts.bucket_state.num_nfts_in_bucket = ctx

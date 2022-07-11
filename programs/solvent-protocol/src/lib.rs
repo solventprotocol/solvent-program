@@ -23,17 +23,18 @@ pub mod solvent_protocol {
         instructions::create_bucket(ctx, collection_info)
     }
 
-    // Deposit an NFT into a bucket and get droplets in exchange
+    // Deposit an NFT into a bucket
     pub fn deposit_nft(
         ctx: Context<DepositNft>,
+        swap: bool,
         whitelist_proof: Option<Vec<[u8; 32]>>,
     ) -> Result<()> {
-        instructions::deposit_nft(ctx, whitelist_proof)
+        instructions::deposit_nft(ctx, swap, whitelist_proof)
     }
 
-    // Burn droplets and redeem an NFT from the bucket in exchange
-    pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
-        instructions::redeem_nft(ctx)
+    // Redeem an NFT from the bucket
+    pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
+        instructions::redeem_nft(ctx, swap)
     }
 
     // Lock an NFT into a locker and get droplets in exchange

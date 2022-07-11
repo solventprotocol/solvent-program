@@ -8,43 +8,44 @@ use anchor_spl::token;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 
 // Burn droplets and redeem an NFT from the bucket in exchange
-pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
+pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
     // Set only the bump because the existing flag is what the flag should be
     ctx.accounts.signer_can_swap.bump = *ctx.bumps.get("signer_can_swap").unwrap();
 
-    // Burn droplets from the signer's account
-    let burn_droplets_ctx = CpiContext::new(
-        ctx.accounts.token_program.to_account_info().clone(),
-        token::Burn {
-            mint: ctx.accounts.droplet_mint.to_account_info().clone(),
-            from: ctx
-                .accounts
-                .signer_droplet_token_account
-                .to_account_info()
-                .clone(),
-            authority: ctx.accounts.signer.to_account_info().clone(),
-        },
-    );
-    token::burn(
-        burn_droplets_ctx,
-        DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
-    )?;
+    if !swap {
+        // Burn droplets from the signer's account
+        let burn_droplets_ctx = CpiContext::new(
+            ctx.accounts.token_program.to_account_info().clone(),
+            token::Burn {
+                mint: ctx.accounts.droplet_mint.to_account_info().clone(),
+                from: ctx
+                    .accounts
+                    .signer_droplet_token_account
+                    .to_account_info()
+                    .clone(),
+                authority: ctx.accounts.signer.to_account_info().clone(),
+            },
+        );
+        token::burn(
+            burn_droplets_ctx,
+            DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
+        )?;
+    }
 
-    // Check if user is eligible for swap and decide on fees accordingly
+    // Check if it's a swap and decide on fees accordingly
     let fee_basis_points;
-    match ctx.accounts.signer_can_swap.flag {
-        true => {
-            fee_basis_points = SWAP_FEE_BASIS_POINTS;
-            ctx.accounts.signer_can_swap.flag = false;
-        }
-        false => fee_basis_points = REDEEM_FEE_BASIS_POINTS,
-    };
+    if swap && ctx.accounts.signer_can_swap.flag {
+        fee_basis_points = SWAP_FEE_BASIS_POINTS;
+        ctx.accounts.signer_can_swap.flag = false;
+    } else {
+        fee_basis_points = REDEEM_FEE_BASIS_POINTS
+    }
 
     // Send redeem// swap fee to Solvent treasury
     let fee_amount = (DROPLETS_PER_NFT as u64)
         .checked_mul(LAMPORTS_PER_DROPLET as u64)
         .unwrap()
-        .checked_mul(REDEEM_FEE_BASIS_POINTS as u64)
+        .checked_mul(fee_basis_points as u64)
         .unwrap()
         .checked_div(10000)
         .unwrap();
@@ -114,32 +115,6 @@ pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
         .num_nfts_in_bucket
         .checked_sub(1)
         .unwrap();
-
-    // Send redeem fee to Solvent treasury
-    let fee_amount = (DROPLETS_PER_NFT as u64)
-        .checked_mul(LAMPORTS_PER_DROPLET as u64)
-        .unwrap()
-        .checked_mul(fee_basis_points as u64)
-        .unwrap()
-        .checked_div(10000)
-        .unwrap();
-    let transfer_fee_ctx = CpiContext::new(
-        ctx.accounts.token_program.to_account_info().clone(),
-        token::Transfer {
-            from: ctx
-                .accounts
-                .signer_droplet_token_account
-                .to_account_info()
-                .clone(),
-            to: ctx
-                .accounts
-                .solvent_treasury_droplet_token_account
-                .to_account_info()
-                .clone(),
-            authority: ctx.accounts.signer.to_account_info().clone(),
-        },
-    );
-    token::transfer(transfer_fee_ctx, fee_amount)?;
 
     // Emit success event
     emit!(RedeemNftEvent {
