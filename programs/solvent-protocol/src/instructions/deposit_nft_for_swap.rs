@@ -153,9 +153,9 @@ pub struct DepositNftForSwap<'info> {
             signer.key().as_ref(),
             SWAP_SEED.as_bytes()
         ],
-    bump,
-    payer = signer,
-    space = SwapState::LEN
+        bump,
+        payer = signer,
+        space = SwapState::LEN
     )]
     pub swap_state: Account<'info, SwapState>,
 
