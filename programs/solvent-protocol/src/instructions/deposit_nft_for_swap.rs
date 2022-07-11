@@ -44,12 +44,12 @@ pub fn deposit_nft_for_swap(
     let solvent_authority_signer_seeds = &[&solvent_authority_seeds[..]];
 
     let fee_amount = (DROPLETS_PER_NFT as u64)
-    .checked_mul(LAMPORTS_PER_DROPLET as u64)
-    .unwrap()
-    .checked_mul(SWAP_FEE_BASIS_POINTS as u64)
-    .unwrap()
-    .checked_div(10000)
-    .unwrap();
+        .checked_mul(LAMPORTS_PER_DROPLET as u64)
+        .unwrap()
+        .checked_mul(SWAP_FEE_BASIS_POINTS as u64)
+        .unwrap()
+        .checked_div(10000)
+        .unwrap();
 
     // Mint droplets minus fee amount to destination account
     let mint_droplets_to_signer_ctx = CpiContext::new_with_signer(
@@ -84,10 +84,7 @@ pub fn deposit_nft_for_swap(
         },
         solvent_authority_signer_seeds,
     );
-    token::mint_to(
-        mint_droplets_to_treasury_ctx,
-        fee_amount,
-    )?;
+    token::mint_to(mint_droplets_to_treasury_ctx, fee_amount)?;
 
     // Increment counter
     ctx.accounts.bucket_state.num_nfts_in_bucket = ctx
