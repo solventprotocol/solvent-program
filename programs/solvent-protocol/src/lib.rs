@@ -36,9 +36,15 @@ pub mod solvent_protocol {
         instructions::redeem_nft(ctx)
     }
 
-    // Swap an NFT for another in a bucket
-    pub fn swap_nfts(ctx: Context<SwapNfts>, whitelist_proof: Option<Vec<[u8; 32]>>) -> Result<()> {
-        instructions::swap_nfts(ctx, whitelist_proof)
+    pub fn deposit_nft_for_swap(
+        ctx: Context<DepositNftForSwap>,
+        whitelist_proof: Option<Vec<[u8; 32]>>,
+    ) -> Result<()> {
+        instructions::deposit_nft_for_swap(ctx, whitelist_proof)
+    }
+
+    pub fn redeem_nft_for_swap(ctx: Context<RedeemNftForSwap>) -> Result<()> {
+        instructions::redeem_nft_for_swap(ctx)
     }
 
     // Lock an NFT into a locker and get droplets in exchange

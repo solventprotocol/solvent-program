@@ -124,3 +124,14 @@ impl ReveneuDistributionParams {
     // Discriminator, 1 u8, 1 Pubkey, Vec of upto 10 RevenuePartners
     pub const LEN: usize = 8 + 1 + 32 + (4 + (10 * 32));
 }
+
+#[account]
+pub struct SwapState {
+    pub bump: u8,
+    pub signer: Pubkey,
+}
+
+impl SwapState {
+    // Discriminator, 1 u8, 1 Pubkey
+    pub const LEN: usize = 8 + 1 + 32;
+}
