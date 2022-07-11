@@ -177,6 +177,20 @@ pub struct RedeemNft<'info> {
     pub bucket_state: Box<Account<'info, BucketStateV3>>,
 
     #[account(
+        mut,
+        seeds = [
+            droplet_mint.key().as_ref(),
+            nft_mint.key().as_ref(),
+            DEPOSIT_SEED.as_bytes()
+        ],
+        bump = deposit_state.bump,
+        close = signer,
+        has_one = nft_mint,
+        has_one = droplet_mint
+    )]
+    pub deposit_state: Account<'info, DepositState>,
+
+    #[account(
         init_if_needed,
         seeds = [
             droplet_mint.key().as_ref(),
