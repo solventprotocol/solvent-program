@@ -19,6 +19,12 @@ pub fn deposit_nft(
         nft_mint: ctx.accounts.nft_mint.key(),
     };
 
+    // Set SignerCanSwap account contents
+    *ctx.accounts.signer_can_swap = SignerCanSwap {
+        bump: *ctx.bumps.get("signer_can_swap").unwrap(),
+        flag: true,
+    };
+
     // Transfer NFT to bucket's token account
     let transfer_nft_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info().clone(),
@@ -118,6 +124,19 @@ pub struct DepositNft<'info> {
         space = DepositState::LEN
     )]
     pub deposit_state: Account<'info, DepositState>,
+
+    #[account(
+        init,
+        seeds = [
+            droplet_mint.key().as_ref(),
+            signer.key().as_ref(),
+            SIGNER_CAN_SWAP_SEED.as_bytes()
+        ],
+        bump,
+        payer = signer,
+        space = SignerCanSwap::LEN
+    )]
+    pub signer_can_swap: Account<'info, SignerCanSwap>,
 
     #[account(mut)]
     pub droplet_mint: Account<'info, Mint>,

@@ -126,12 +126,12 @@ impl ReveneuDistributionParams {
 }
 
 #[account]
-pub struct SwapState {
+pub struct SignerCanSwap {
     pub bump: u8,
-    pub signer: Pubkey,
+    pub flag: bool,
 }
 
-impl SwapState {
-    // Discriminator, 1 u8, 1 Pubkey
-    pub const LEN: usize = 8 + 1 + 32;
+impl SignerCanSwap {
+    // Discriminator, 1 u8, 1 bool
+    pub const LEN: usize = 8 + 1 + 1;
 }
