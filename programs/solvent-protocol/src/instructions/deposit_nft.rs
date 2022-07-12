@@ -24,6 +24,7 @@ pub fn deposit_nft(
     *ctx.accounts.swap_state = SwapState {
         bump: *ctx.bumps.get("swap_state").unwrap(),
         signer: ctx.accounts.signer.key(),
+        droplet_mint: ctx.accounts.droplet_mint.key(),
         flag: swap,
     };
 
@@ -132,6 +133,7 @@ pub struct DepositNft<'info> {
     #[account(
         init_if_needed,
         seeds = [
+            droplet_mint.key().as_ref(),
             signer.key().as_ref(),
             SWAP_SEED.as_bytes()
         ],

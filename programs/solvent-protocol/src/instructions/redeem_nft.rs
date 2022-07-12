@@ -11,9 +11,17 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
     // Not setting the flag cause the existing flag is what it should be
     ctx.accounts.swap_state.bump = *ctx.bumps.get("swap_state").unwrap();
+    ctx.accounts.swap_state.droplet_mint = ctx.accounts.droplet_mint.key();
     ctx.accounts.swap_state.signer = ctx.accounts.signer.key();
 
-    if !swap {
+    let fee_basis_points;
+
+    if swap && ctx.accounts.swap_state.flag {
+        fee_basis_points = SWAP_FEE_BASIS_POINTS;
+        ctx.accounts.swap_state.flag = false;
+    } else {
+        fee_basis_points = REDEEM_FEE_BASIS_POINTS;
+
         // Burn droplets from the signer's account
         let burn_droplets_ctx = CpiContext::new(
             ctx.accounts.token_program.to_account_info().clone(),
@@ -31,15 +39,6 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
             burn_droplets_ctx,
             DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
         )?;
-    }
-
-    // Check if it's a swap and decide on fees accordingly
-    let fee_basis_points;
-    if swap && ctx.accounts.swap_state.flag {
-        fee_basis_points = SWAP_FEE_BASIS_POINTS;
-        ctx.accounts.swap_state.flag = false;
-    } else {
-        fee_basis_points = REDEEM_FEE_BASIS_POINTS
     }
 
     // Send redeem// swap fee to Solvent treasury
@@ -169,6 +168,7 @@ pub struct RedeemNft<'info> {
     #[account(
         init_if_needed,
         seeds = [
+            droplet_mint.key().as_ref(),
             signer.key().as_ref(),
             SWAP_SEED.as_bytes()
         ],

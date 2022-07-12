@@ -105,11 +105,12 @@ impl MigrationState {
 #[account]
 pub struct SwapState {
     pub bump: u8,
+    pub droplet_mint: Pubkey,
     pub signer: Pubkey,
     pub flag: bool,
 }
 
 impl SwapState {
-    // Discriminator, 1 u8, 1 Pubkey, 1 bool
-    pub const LEN: usize = 8 + 1 + 32 + 1;
+    // Discriminator, 1 u8, 2 Pubkeys, 1 bool
+    pub const LEN: usize = 8 + 1 + (2 * 32) + 1;
 }
