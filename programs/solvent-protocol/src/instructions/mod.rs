@@ -1,7 +1,6 @@
 pub use claim_balance::*;
 pub use create_bucket::*;
 pub use deposit_nft::*;
-pub use distribute_revenue::*;
 pub use liquidate_locker::*;
 pub use lock_nft::*;
 pub use migrate_droplets::*;
@@ -15,13 +14,11 @@ pub use swap_nfts::*;
 pub use unlock_nft::*;
 pub use unstake_nft::*;
 pub use update_locking_params::*;
-pub use update_revenue_distribution_params::*;
 pub use update_staking_params::*;
 
 pub mod claim_balance;
 pub mod create_bucket;
 pub mod deposit_nft;
-pub mod distribute_revenue;
 pub mod liquidate_locker;
 pub mod lock_nft;
 pub mod migrate_droplets;
@@ -35,5 +32,4 @@ pub mod swap_nfts;
 pub mod unlock_nft;
 pub mod unstake_nft;
 pub mod update_locking_params;
-pub mod update_revenue_distribution_params;
 pub mod update_staking_params;
