@@ -16,7 +16,6 @@ pub const BUCKET_SEED: &str = "bucket-seed-v3";
 pub const LOCKER_SEED: &str = "locker-seed";
 pub const DEPOSIT_SEED: &str = "deposit-seed";
 pub const SWAP_SEED: &str = "swap-seed";
-pub const REVENUE_DISTRIBUTION_SEED: &str = "revenue-distribution-seed";
 pub const GEMWORKS_FARMER_SEED: &str = "farmer";
 pub const GEMWORKS_VAULT_SEED: &str = "vault";
 pub const GEMWORKS_GEM_BOX_SEED: &str = "gem_box";
