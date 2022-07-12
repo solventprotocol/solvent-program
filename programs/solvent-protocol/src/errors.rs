@@ -52,7 +52,4 @@ pub enum SolventError {
 
     #[msg("The staked NFT is in cooldown period, please wait and try again.")]
     StakingCooldownPending,
-
-    #[msg("The revenue distribution params are invalid.")]
-    RevenueDistributionParamsInvalid,
 }
