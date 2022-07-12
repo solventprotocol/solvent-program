@@ -10,6 +10,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 // Deposit an NFT into a bucket and get droplets in exchange
 pub fn deposit_nft(
     ctx: Context<DepositNft>,
+    swap: bool,
     _whitelist_proof: Option<Vec<[u8; 32]>>,
 ) -> Result<()> {
     // Set DepositState account contents
@@ -17,6 +18,14 @@ pub fn deposit_nft(
         bump: *ctx.bumps.get("deposit_state").unwrap(),
         droplet_mint: ctx.accounts.droplet_mint.key(),
         nft_mint: ctx.accounts.nft_mint.key(),
+    };
+
+    // Set SwapState account contents
+    *ctx.accounts.swap_state = SwapState {
+        bump: *ctx.bumps.get("swap_state").unwrap(),
+        signer: ctx.accounts.signer.key(),
+        droplet_mint: ctx.accounts.droplet_mint.key(),
+        flag: swap,
     };
 
     // Transfer NFT to bucket's token account
@@ -43,24 +52,26 @@ pub fn deposit_nft(
     let solvent_authority_seeds = &[SOLVENT_AUTHORITY_SEED.as_bytes(), &[solvent_authority_bump]];
     let solvent_authority_signer_seeds = &[&solvent_authority_seeds[..]];
 
-    // Mint droplets to destination account
-    let mint_droplets_ctx = CpiContext::new_with_signer(
-        ctx.accounts.token_program.to_account_info().clone(),
-        token::MintTo {
-            mint: ctx.accounts.droplet_mint.to_account_info().clone(),
-            to: ctx
-                .accounts
-                .destination_droplet_token_account
-                .to_account_info()
-                .clone(),
-            authority: ctx.accounts.solvent_authority.to_account_info().clone(),
-        },
-        solvent_authority_signer_seeds,
-    );
-    token::mint_to(
-        mint_droplets_ctx,
-        DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
-    )?;
+    if !swap {
+        // Mint droplets to destination account
+        let mint_droplets_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info().clone(),
+            token::MintTo {
+                mint: ctx.accounts.droplet_mint.to_account_info().clone(),
+                to: ctx
+                    .accounts
+                    .destination_droplet_token_account
+                    .to_account_info()
+                    .clone(),
+                authority: ctx.accounts.solvent_authority.to_account_info().clone(),
+            },
+            solvent_authority_signer_seeds,
+        );
+        token::mint_to(
+            mint_droplets_ctx,
+            DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
+        )?;
+    }
 
     // Increment counter
     ctx.accounts.bucket_state.num_nfts_in_bucket = ctx
@@ -83,7 +94,7 @@ pub fn deposit_nft(
 }
 
 #[derive(Accounts)]
-#[instruction(whitelist_proof: Option<Vec<[u8; 32]>>)]
+#[instruction(_swap: bool, whitelist_proof: Option<Vec<[u8; 32]>>)]
 pub struct DepositNft<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
@@ -118,6 +129,19 @@ pub struct DepositNft<'info> {
         space = DepositState::LEN
     )]
     pub deposit_state: Account<'info, DepositState>,
+
+    #[account(
+        init_if_needed,
+        seeds = [
+            droplet_mint.key().as_ref(),
+            signer.key().as_ref(),
+            SWAP_SEED.as_bytes()
+        ],
+        bump,
+        payer = signer,
+        space = SwapState::LEN
+    )]
+    pub swap_state: Account<'info, SwapState>,
 
     #[account(mut)]
     pub droplet_mint: Account<'info, Mint>,

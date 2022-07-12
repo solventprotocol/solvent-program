@@ -8,30 +8,44 @@ use anchor_spl::token;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 
 // Burn droplets and redeem an NFT from the bucket in exchange
-pub fn redeem_nft(ctx: Context<RedeemNft>) -> Result<()> {
-    // Burn droplets from the signer's account
-    let burn_droplets_ctx = CpiContext::new(
-        ctx.accounts.token_program.to_account_info().clone(),
-        token::Burn {
-            mint: ctx.accounts.droplet_mint.to_account_info().clone(),
-            from: ctx
-                .accounts
-                .signer_droplet_token_account
-                .to_account_info()
-                .clone(),
-            authority: ctx.accounts.signer.to_account_info().clone(),
-        },
-    );
-    token::burn(
-        burn_droplets_ctx,
-        DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
-    )?;
+pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
+    // Not setting the flag cause the existing flag is what it should be
+    ctx.accounts.swap_state.bump = *ctx.bumps.get("swap_state").unwrap();
+    ctx.accounts.swap_state.droplet_mint = ctx.accounts.droplet_mint.key();
+    ctx.accounts.swap_state.signer = ctx.accounts.signer.key();
 
-    // Send redeem fee to Solvent treasury
+    let fee_basis_points;
+
+    if swap && ctx.accounts.swap_state.flag {
+        fee_basis_points = SWAP_FEE_BASIS_POINTS;
+        ctx.accounts.swap_state.flag = false;
+    } else {
+        fee_basis_points = REDEEM_FEE_BASIS_POINTS;
+
+        // Burn droplets from the signer's account
+        let burn_droplets_ctx = CpiContext::new(
+            ctx.accounts.token_program.to_account_info().clone(),
+            token::Burn {
+                mint: ctx.accounts.droplet_mint.to_account_info().clone(),
+                from: ctx
+                    .accounts
+                    .signer_droplet_token_account
+                    .to_account_info()
+                    .clone(),
+                authority: ctx.accounts.signer.to_account_info().clone(),
+            },
+        );
+        token::burn(
+            burn_droplets_ctx,
+            DROPLETS_PER_NFT as u64 * LAMPORTS_PER_DROPLET,
+        )?;
+    }
+
+    // Send redeem// swap fee to Solvent treasury
     let fee_amount = (DROPLETS_PER_NFT as u64)
         .checked_mul(LAMPORTS_PER_DROPLET as u64)
         .unwrap()
-        .checked_mul(REDEEM_FEE_BASIS_POINTS as u64)
+        .checked_mul(fee_basis_points as u64)
         .unwrap()
         .checked_div(10000)
         .unwrap();
@@ -150,6 +164,19 @@ pub struct RedeemNft<'info> {
         has_one = droplet_mint
     )]
     pub deposit_state: Account<'info, DepositState>,
+
+    #[account(
+        init_if_needed,
+        seeds = [
+            droplet_mint.key().as_ref(),
+            signer.key().as_ref(),
+            SWAP_SEED.as_bytes()
+        ],
+        bump,
+        payer = signer,
+        space = SwapState::LEN
+    )]
+    pub swap_state: Account<'info, SwapState>,
 
     #[account(mut)]
     pub droplet_mint: Account<'info, Mint>,

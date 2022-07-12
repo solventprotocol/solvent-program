@@ -140,7 +140,7 @@ describe("Redeeming NFTs from bucket", () => {
       // Deposit NFT into Solvent
       await provider.connection.confirmTransaction(
         await program.methods
-          .depositNft(null)
+          .depositNft(false, null)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint: dropletMintKeypair.publicKey,
@@ -190,28 +190,23 @@ describe("Redeeming NFTs from bucket", () => {
       );
       const numNftsInBucket = bucketState.numNftsInBucket;
 
-      // Redeem NFT and burn droplets in the process
-      try {
-        await provider.connection.confirmTransaction(
-          await program.methods
-            .redeemNft()
-            .accounts({
-              signer: holderKeypair.publicKey,
-              dropletMint,
-              nftMint: nftMintAddress,
-              solventNftTokenAccount,
-              solventTreasury: SOLVENT_TREASURY,
-              solventTreasuryDropletTokenAccount,
-              destinationNftTokenAccount: holderNftTokenAccount.address,
-              signerDropletTokenAccount: holderDropletTokenAccount.address,
-            })
-            .signers([holderKeypair])
-            .rpc()
-        );
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
+      // Redeem NFT
+      await provider.connection.confirmTransaction(
+        await program.methods
+          .redeemNft(false)
+          .accounts({
+            signer: holderKeypair.publicKey,
+            dropletMint,
+            nftMint: nftMintAddress,
+            solventNftTokenAccount,
+            solventTreasury: SOLVENT_TREASURY,
+            solventTreasuryDropletTokenAccount,
+            destinationNftTokenAccount: holderNftTokenAccount.address,
+            signerDropletTokenAccount: holderDropletTokenAccount.address,
+          })
+          .signers([holderKeypair])
+          .rpc()
+      );
 
       // Ensure user burned 102 droplets
       expect(
