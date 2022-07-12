@@ -20,7 +20,7 @@ pub fn deposit_nft(
         nft_mint: ctx.accounts.nft_mint.key(),
     };
 
-    // Set SignerCanSwap account contents
+    // Set SwapState account contents
     *ctx.accounts.swap_state = SwapState {
         bump: *ctx.bumps.get("swap_state").unwrap(),
         signer: ctx.accounts.signer.key(),
