@@ -151,7 +151,7 @@ describe("Depositing NFTs into bucket", () => {
         // Deposit NFT into Solvent
         await provider.connection.confirmTransaction(
           await program.methods
-            .depositNft(whitelistProof)
+            .depositNft(false, whitelistProof)
             .accounts({
               signer: holderKeypair.publicKey,
               dropletMint,
@@ -239,7 +239,7 @@ describe("Depositing NFTs into bucket", () => {
       try {
         // Deposit NFT into Solvent
         await program.methods
-          .depositNft(whitelistProof)
+          .depositNft(false, whitelistProof)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
@@ -304,7 +304,7 @@ describe("Depositing NFTs into bucket", () => {
       try {
         // Deposit NFT into Solvent
         await program.methods
-          .depositNft(whitelistProof)
+          .depositNft(false, whitelistProof)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
@@ -375,7 +375,7 @@ describe("Depositing NFTs into bucket", () => {
       try {
         // Deposit NFT into Solvent
         await program.methods
-          .depositNft(whitelistProof)
+          .depositNft(false, whitelistProof)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
@@ -519,7 +519,7 @@ describe("Depositing NFTs into bucket", () => {
         // Deposit NFT into Solvent
         await provider.connection.confirmTransaction(
           await program.methods
-            .depositNft(null)
+            .depositNft(false, null)
             .accounts({
               signer: holderKeypair.publicKey,
               dropletMint,
@@ -608,7 +608,7 @@ describe("Depositing NFTs into bucket", () => {
       try {
         // Deposit NFT into Solvent
         await program.methods
-          .depositNft(whitelistProof)
+          .depositNft(false, whitelistProof)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,

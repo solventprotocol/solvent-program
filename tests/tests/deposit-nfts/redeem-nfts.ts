@@ -140,7 +140,7 @@ describe("Redeeming NFTs from bucket", () => {
       // Deposit NFT into Solvent
       await provider.connection.confirmTransaction(
         await program.methods
-          .depositNft(null)
+          .depositNft(false, null)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint: dropletMintKeypair.publicKey,
@@ -193,7 +193,7 @@ describe("Redeeming NFTs from bucket", () => {
       // Redeem NFT
       await provider.connection.confirmTransaction(
         await program.methods
-          .redeemNft()
+          .redeemNft(false)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,

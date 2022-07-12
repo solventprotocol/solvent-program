@@ -9,8 +9,9 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 
 // Burn droplets and redeem an NFT from the bucket in exchange
 pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
-    // Set only the bump because the existing flag is what the flag should be
-    ctx.accounts.signer_can_swap.bump = *ctx.bumps.get("signer_can_swap").unwrap();
+    // Not setting the flag cause the existing flag is what it should be
+    ctx.accounts.swap_state.bump = *ctx.bumps.get("swap_state").unwrap();
+    ctx.accounts.swap_state.signer = ctx.accounts.signer.key();
 
     if !swap {
         // Burn droplets from the signer's account
@@ -34,9 +35,9 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
 
     // Check if it's a swap and decide on fees accordingly
     let fee_basis_points;
-    if swap && ctx.accounts.signer_can_swap.flag {
+    if swap && ctx.accounts.swap_state.flag {
         fee_basis_points = SWAP_FEE_BASIS_POINTS;
-        ctx.accounts.signer_can_swap.flag = false;
+        ctx.accounts.swap_state.flag = false;
     } else {
         fee_basis_points = REDEEM_FEE_BASIS_POINTS
     }
@@ -169,13 +170,13 @@ pub struct RedeemNft<'info> {
         init_if_needed,
         seeds = [
             signer.key().as_ref(),
-            SIGNER_CAN_SWAP_SEED.as_bytes()
+            SWAP_SEED.as_bytes()
         ],
         bump,
         payer = signer,
-        space = SignerCanSwap::LEN
+        space = SwapState::LEN
     )]
-    pub signer_can_swap: Account<'info, SignerCanSwap>,
+    pub swap_state: Account<'info, SwapState>,
 
     #[account(mut)]
     pub droplet_mint: Account<'info, Mint>,

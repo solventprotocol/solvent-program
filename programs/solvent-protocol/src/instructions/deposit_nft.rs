@@ -21,9 +21,10 @@ pub fn deposit_nft(
     };
 
     // Set SignerCanSwap account contents
-    *ctx.accounts.signer_can_swap = SignerCanSwap {
-        bump: *ctx.bumps.get("signer_can_swap").unwrap(),
-        flag: true,
+    *ctx.accounts.swap_state = SwapState {
+        bump: *ctx.bumps.get("swap_state").unwrap(),
+        signer: ctx.accounts.signer.key(),
+        flag: swap,
     };
 
     // Transfer NFT to bucket's token account
@@ -92,7 +93,7 @@ pub fn deposit_nft(
 }
 
 #[derive(Accounts)]
-#[instruction(whitelist_proof: Option<Vec<[u8; 32]>>)]
+#[instruction(_swap: bool, whitelist_proof: Option<Vec<[u8; 32]>>)]
 pub struct DepositNft<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
@@ -129,16 +130,16 @@ pub struct DepositNft<'info> {
     pub deposit_state: Account<'info, DepositState>,
 
     #[account(
-        init,
+        init_if_needed,
         seeds = [
             signer.key().as_ref(),
-            SIGNER_CAN_SWAP_SEED.as_bytes()
+            SWAP_SEED.as_bytes()
         ],
         bump,
         payer = signer,
-        space = SignerCanSwap::LEN
+        space = SwapState::LEN
     )]
-    pub signer_can_swap: Account<'info, SignerCanSwap>,
+    pub swap_state: Account<'info, SwapState>,
 
     #[account(mut)]
     pub droplet_mint: Account<'info, Mint>,

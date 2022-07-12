@@ -114,24 +114,25 @@ impl RevenuePartner {
 }
 
 #[account]
-pub struct ReveneuDistributionParams {
+pub struct ReveneuDistributionState {
     pub bump: u8,
     pub droplet_mint: Pubkey,
     pub revenue_partners: Vec<RevenuePartner>,
 }
 
-impl ReveneuDistributionParams {
+impl ReveneuDistributionState {
     // Discriminator, 1 u8, 1 Pubkey, Vec of upto 10 RevenuePartners
     pub const LEN: usize = 8 + 1 + 32 + (4 + (10 * 32));
 }
 
 #[account]
-pub struct SignerCanSwap {
+pub struct SwapState {
     pub bump: u8,
+    pub signer: Pubkey,
     pub flag: bool,
 }
 
-impl SignerCanSwap {
-    // Discriminator, 1 u8, 1 bool
-    pub const LEN: usize = 8 + 1 + 1;
+impl SwapState {
+    // Discriminator, 1 u8, 1 Pubkey, 1 bool
+    pub const LEN: usize = 8 + 1 + 32 + 1;
 }

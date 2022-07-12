@@ -150,7 +150,7 @@ describe("Unlocking NFTs from lockers", () => {
       // Deposit NFT into Solvent
       await provider.connection.confirmTransaction(
         await program.methods
-          .depositNft(null)
+          .depositNft(false, null)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint: dropletMintKeypair.publicKey,

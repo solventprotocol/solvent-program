@@ -125,7 +125,7 @@ describe("Swapping NFTs", () => {
     // Deposit NFT into Solvent
     await provider.connection.confirmTransaction(
       await program.methods
-        .depositNft(null)
+        .depositNft(false, null)
         .accounts({
           signer: holderKeypair.publicKey,
           dropletMint,
@@ -212,7 +212,7 @@ describe("Swapping NFTs", () => {
       // Deposit NFT for swap
       await provider.connection.confirmTransaction(
         await program.methods
-          .depositNft(null)
+          .depositNft(true, null)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
@@ -229,7 +229,7 @@ describe("Swapping NFTs", () => {
       // Redeem NFT for swap
       await provider.connection.confirmTransaction(
         await program.methods
-          .redeemNft()
+          .redeemNft(true)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,

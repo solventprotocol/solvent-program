@@ -290,7 +290,7 @@ describe("Unstaking NFT", () => {
       // Deposit NFT into Solvent
       await provider.connection.confirmTransaction(
         await program.methods
-          .depositNft(null)
+          .depositNft(false, null)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,

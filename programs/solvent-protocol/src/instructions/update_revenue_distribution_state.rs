@@ -4,7 +4,7 @@ use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 
-pub fn update_revenue_distribution_params(
+pub fn update_revenue_distribution_state(
     ctx: Context<UpdateRevenueDistributionParams>,
     revenue_partners: Vec<RevenuePartner>,
 ) -> Result<()> {
@@ -19,8 +19,8 @@ pub fn update_revenue_distribution_params(
     );
 
     // Store revenue partner infos
-    **ctx.accounts.revenue_distribution_params = ReveneuDistributionParams {
-        bump: *ctx.bumps.get("revenue_distribution_params").unwrap(),
+    **ctx.accounts.revenue_distribution_state = ReveneuDistributionState {
+        bump: *ctx.bumps.get("revenue_distribution_state").unwrap(),
         droplet_mint: ctx.accounts.droplet_mint.key(),
         revenue_partners: revenue_partners.clone(),
     };
@@ -47,13 +47,13 @@ pub struct UpdateRevenueDistributionParams<'info> {
         init_if_needed,
         seeds = [
             droplet_mint.key().as_ref(),
-            REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()
+            REVENUE_DISTRIBUTION_SEED.as_bytes()
         ],
         bump,
-        space = ReveneuDistributionParams::LEN,
+        space = ReveneuDistributionState::LEN,
         payer = signer
     )]
-    pub revenue_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,
+    pub revenue_distribution_state: Box<Account<'info, ReveneuDistributionState>>,
 
     pub droplet_mint: Account<'info, Mint>,
 

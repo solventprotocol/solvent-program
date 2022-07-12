@@ -169,7 +169,7 @@ describe("Locking NFTs into lockers", () => {
         // Deposit NFT into Solvent
         await provider.connection.confirmTransaction(
           await program.methods
-            .depositNft(whitelistProof)
+            .depositNft(false, whitelistProof)
             .accounts({
               signer: holderKeypair.publicKey,
               dropletMint: dropletMintKeypair.publicKey,
@@ -616,7 +616,7 @@ describe("Locking NFTs into lockers", () => {
         // Deposit NFT into Solvent
         await provider.connection.confirmTransaction(
           await program.methods
-            .depositNft(null)
+            .depositNft(false, null)
             .accounts({
               signer: holderKeypair.publicKey,
               dropletMint: dropletMintKeypair.publicKey,
@@ -962,7 +962,7 @@ describe("Locking NFTs into lockers", () => {
       // Deposit NFT into Solvent
       await provider.connection.confirmTransaction(
         await program.methods
-          .depositNft(null)
+          .depositNft(false, null)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,

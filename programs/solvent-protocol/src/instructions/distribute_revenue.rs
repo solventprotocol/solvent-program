@@ -18,7 +18,7 @@ pub fn distribute_revenue<'info>(
     // Iter through all the revenue partners and send share of revenue
     for revenue_partner in ctx
         .accounts
-        .revenue_distribution_params
+        .revenue_distribution_state
         .revenue_partners
         .iter()
     {
@@ -74,17 +74,17 @@ pub struct DistributeRevenue<'info> {
     #[account(
         seeds = [
             droplet_mint.key().as_ref(),
-            REVENUE_DISTRIBUTION_PARAMS_SEED.as_bytes()
+            REVENUE_DISTRIBUTION_SEED.as_bytes()
         ],
-        bump = revenue_distribution_params.bump,
+        bump = revenue_distribution_state.bump,
         has_one = droplet_mint
     )]
-    pub revenue_distribution_params: Box<Account<'info, ReveneuDistributionParams>>,
+    pub revenue_distribution_state: Box<Account<'info, ReveneuDistributionState>>,
 
     #[account(
         mut,
         address = get_associated_token_address(
-            &revenue_distribution_params.key(),
+            &revenue_distribution_state.key(),
             &droplet_mint.key()
         ),
     )]
