@@ -2,6 +2,7 @@ import * as anchor from "@project-serum/anchor";
 import {
   createAssociatedTokenAccount,
   createMint,
+  getAccount,
   mintToChecked,
 } from "@solana/spl-token-latest";
 import {
@@ -208,4 +209,15 @@ export const getMerkleProof = (
   const leaf = keccak256(mint.toBuffer());
   const proof: Buffer[] = tree.getProof(leaf).map((x) => x.data);
   return proof.map((x) => [...x]);
+};
+
+export const getBalance = async (
+  connection: anchor.web3.Connection,
+  tokenAccount: anchor.web3.PublicKey
+) => {
+  let tokenAccountBalance = BigInt(0);
+  try {
+    tokenAccountBalance = (await getAccount(connection, tokenAccount)).amount;
+  } catch (error) {}
+  return tokenAccountBalance;
 };

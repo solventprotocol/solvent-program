@@ -16,10 +16,17 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
 
     let fee_basis_points;
 
-    if swap && ctx.accounts.swap_state.flag {
-        fee_basis_points = SWAP_FEE_BASIS_POINTS;
-        ctx.accounts.swap_state.flag = false;
+    if swap {
+        if ctx.accounts.swap_state.flag {
+            // User passed swap=true and he's eligible
+            fee_basis_points = SWAP_FEE_BASIS_POINTS;
+            ctx.accounts.swap_state.flag = false;
+        } else {
+            // User passed swap=true but he's not eligible for swap yet
+            return err!(SolventError::SwapNotAllowed);
+        }
     } else {
+        // User passed swap=false
         fee_basis_points = REDEEM_FEE_BASIS_POINTS;
 
         // Burn droplets from the signer's account
