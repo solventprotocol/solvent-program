@@ -52,4 +52,7 @@ pub enum SolventError {
 
     #[msg("The staked NFT is in cooldown period, please wait and try again.")]
     StakingCooldownPending,
+
+    #[msg("You cannot redeem NFT as part of a swap because you haven't deposited one yet.")]
+    SwapNotAllowed,
 }
