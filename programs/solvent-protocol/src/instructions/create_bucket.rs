@@ -33,7 +33,7 @@ pub fn create_bucket(ctx: Context<CreateBucket>, collection_info: CollectionInfo
     **ctx.accounts.bucket_state = BucketStateV3 {
         bump: *ctx.bumps.get("bucket_state").unwrap(),
         droplet_mint: ctx.accounts.droplet_mint.key(),
-        collection_info,
+        collection_info: collection_info.clone(),
         // Counters
         num_nfts_in_bucket: 0,
         num_nfts_in_lockers: 0,
@@ -49,7 +49,8 @@ pub fn create_bucket(ctx: Context<CreateBucket>, collection_info: CollectionInfo
     // Emit success event
     emit!(CreateBucketEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
-        signer: ctx.accounts.signer.key()
+        signer: ctx.accounts.signer.key(),
+        collection_info
     });
 
     Ok(())
@@ -97,4 +98,5 @@ pub struct CreateBucket<'info> {
 pub struct CreateBucketEvent {
     pub signer: Pubkey,
     pub droplet_mint: Pubkey,
+    pub collection_info: CollectionInfo,
 }
