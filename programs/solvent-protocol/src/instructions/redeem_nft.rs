@@ -148,6 +148,13 @@ pub struct RedeemNft<'info> {
     pub solvent_authority: UncheckedAccount<'info>,
 
     #[account(
+        init_if_needed,
+        payer = signer,
+        associated_token::mint = droplet_mint,
+    )]
+    pub distributor_droplet_token_account: Box<Account<'info, TokenAccount>>,
+
+    #[account(
         mut,
         seeds = [
             droplet_mint.key().as_ref(),
@@ -170,7 +177,7 @@ pub struct RedeemNft<'info> {
         has_one = nft_mint,
         has_one = droplet_mint
     )]
-    pub deposit_state: Account<'info, DepositState>,
+    pub deposit_state: Box<Account<'info, DepositState>>,
 
     #[account(
         init_if_needed,
@@ -183,12 +190,12 @@ pub struct RedeemNft<'info> {
         payer = signer,
         space = SwapState::LEN
     )]
-    pub swap_state: Account<'info, SwapState>,
+    pub swap_state: Box<Account<'info, SwapState>,
 
     #[account(mut)]
-    pub droplet_mint: Account<'info, Mint>,
+    pub droplet_mint: Box<Account<'info, Mint>>,
 
-    pub nft_mint: Account<'info, Mint>,
+    pub nft_mint: Box<Account<'info, Mint>>,
 
     #[account(
         mut,

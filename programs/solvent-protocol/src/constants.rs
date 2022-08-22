@@ -30,8 +30,9 @@ pub const MIGRATION_SEED: &str = "migration-seed";
 pub const SOLVENT_CORE_TREASURY: Pubkey = pubkey!("45nueWN9Qwn5vDBmJGBLEsYvaJG6vrNmNdCyrntXDk2K");
 pub const SOLVENT_LOCKERS_TREASURY: Pubkey =
     pubkey!("HkjFiwUW7qnREVm2PxBg8LUrCvjExrJjyYY51wsZTUK8");
+pub const SOLVENT_CRANK: Pubkey = pubkey!("Hr4eSwCbeaFL1DVVDwPx18DGgnfQmYX6VkbXk66mYnnn");
 
 #[cfg(feature = "test-ids")]
 pub const SOLVENT_ADMIN: Pubkey = pubkey!("DPnNwkEzRLxeL1k3ftkSYNgbUDaWyi37VQArW56v8xok");
 #[cfg(not(feature = "test-ids"))]
-pub const SOLVENT_ADMIN: Pubkey = pubkey!("Hr4eSwCbeaFL1DVVDwPx18DGgnfQmYX6VkbXk66mYnnn");
+pub const SOLVENT_ADMIN: Pubkey = pubkey!("DYJXfxaci8NzfkHRZ87Ycfwp1CMMwssXcKeN8hWTbons");

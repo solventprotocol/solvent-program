@@ -79,7 +79,7 @@ pub struct MigrateDroplets<'info> {
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_authority: UncheckedAccount<'info>,
 
-    #[account(address = SOLVENT_ADMIN @ SolventError::SolventTreasuryInvalid)]
+    #[account(address = SOLVENT_CRANK @ SolventError::SolventTreasuryInvalid)]
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_admin: UncheckedAccount<'info>,
 
