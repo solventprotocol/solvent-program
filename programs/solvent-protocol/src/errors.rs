@@ -55,4 +55,7 @@ pub enum SolventError {
 
     #[msg("You cannot redeem NFT as part of a swap because you haven't deposited one yet.")]
     SwapNotAllowed,
+
+    #[msg("Incorrect fee calculation.")]
+    IncorrectFeeDistribution
 }
