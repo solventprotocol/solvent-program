@@ -71,7 +71,10 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
 
     // Ensure correct fee calculation
     require!(
-        distributor_fee_amount.checked_add(solvent_treasury_fee_amount as u64).unwrap() == total_fee_amount,
+        distributor_fee_amount
+            .checked_add(solvent_treasury_fee_amount as u64)
+            .unwrap()
+            == total_fee_amount,
         SolventError::IncorrectFeeDistribution
     );
 
@@ -187,7 +190,7 @@ pub struct RedeemNft<'info> {
     pub solvent_authority: UncheckedAccount<'info>,
 
     /// CHECK: Safe because there are enough constraints set
-    pub distributor_key: UncheckedAccount<'info>,    
+    pub distributor_key: UncheckedAccount<'info>,
 
     #[account(
         init_if_needed,

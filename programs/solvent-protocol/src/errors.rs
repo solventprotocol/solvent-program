@@ -57,5 +57,5 @@ pub enum SolventError {
     SwapNotAllowed,
 
     #[msg("Incorrect fee calculation.")]
-    IncorrectFeeDistribution
+    IncorrectFeeDistribution,
 }
