@@ -196,7 +196,7 @@ describe("Redeeming NFTs from bucket", () => {
           .redeemNft(false)
           .accounts({
             signer: holderKeypair.publicKey,
-            distributorKey: SOLVENT_TREASURY,
+            distributor: SOLVENT_TREASURY,
             distributorDropletTokenAccount: solventTreasuryDropletTokenAccount,
             dropletMint,
             nftMint: nftMintAddress,

@@ -234,7 +234,7 @@ describe("Swapping NFTs", () => {
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
-            distributorKey: SOLVENT_TREASURY,
+            distributor: SOLVENT_TREASURY,
             distributorDropletTokenAccount: solventTreasuryDropletTokenAccount,
             nftMint: nftToRedeemMint,
             destinationNftTokenAccount: holderNftToRedeemTokenAccount.address,
@@ -478,7 +478,7 @@ describe("Swapping NFTs", () => {
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
-            distributorKey: SOLVENT_TREASURY,
+            distributor: SOLVENT_TREASURY,
             distributorDropletTokenAccount: solventTreasuryDropletTokenAccount,
             nftMint: nftToRedeemMint,
             destinationNftTokenAccount: holderNftToRedeemTokenAccount.address,
@@ -618,7 +618,7 @@ describe("Swapping NFTs", () => {
         .accounts({
           signer: holderKeypair.publicKey,
           dropletMint,
-          distributorKey: SOLVENT_TREASURY,
+          distributor: SOLVENT_TREASURY,
           distributorDropletTokenAccount: solventTreasuryDropletTokenAccount,
           nftMint: nftToRedeemMint,
           destinationNftTokenAccount: holderNftToRedeemTokenAccount.address,

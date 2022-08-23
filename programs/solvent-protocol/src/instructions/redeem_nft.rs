@@ -54,19 +54,19 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
         .unwrap()
         .checked_mul(fee_basis_points as u64)
         .unwrap()
-        .checked_div(10000)
+        .checked_div(10_000_u64)
         .unwrap();
 
-    let distributor_fee_amount = (total_fee_amount as u64)
-        .checked_mul(DISTRIBUTOR_FEE_PERCENTAGE as u64)
+    let distributor_fee_amount = total_fee_amount
+        .checked_mul(DISTRIBUTOR_FEE_BASIS_POINTS as u64)
         .unwrap()
-        .checked_div(100_u64)
+        .checked_div(10_000_u64)
         .unwrap();
 
-    let solvent_treasury_fee_amount = (total_fee_amount as u64)
-        .checked_mul(100_u64 - DISTRIBUTOR_FEE_PERCENTAGE as u64)
+    let solvent_treasury_fee_amount = total_fee_amount
+        .checked_mul(10_000_u64 - DISTRIBUTOR_FEE_BASIS_POINTS as u64)
         .unwrap()
-        .checked_div(100_u64)
+        .checked_div(10_000_u64)
         .unwrap();
 
     // Ensure correct fee calculation
@@ -190,13 +190,13 @@ pub struct RedeemNft<'info> {
     pub solvent_authority: UncheckedAccount<'info>,
 
     /// CHECK: Safe because there are enough constraints set
-    pub distributor_key: UncheckedAccount<'info>,
+    pub distributor: UncheckedAccount<'info>,
 
     #[account(
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint,
-        associated_token::authority = distributor_key
+        associated_token::authority = distributor
     )]
     pub distributor_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
