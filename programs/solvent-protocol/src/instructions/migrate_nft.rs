@@ -60,7 +60,7 @@ pub fn migrate_nft(
 pub struct MigrateNft<'info> {
     #[account(
         mut,
-        address = SOLVENT_CRANK @ SolventError::AdminAccessUnauthorized
+        address = SOLVENT_MIGRATION_CRANK @ SolventError::AdminAccessUnauthorized
     )]
     pub signer: Signer<'info>,
 

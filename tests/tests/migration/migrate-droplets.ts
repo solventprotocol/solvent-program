@@ -240,11 +240,12 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
           holderKeypair.publicKey
         );
 
-      const adminDropletTokenAccount = await getAssociatedTokenAddress(
-        dropletMintOld,
-        SOLVENT_ADMIN.publicKey,
-        true
-      );
+      const solventMigrationCrankDropletTokenAccount =
+        await getAssociatedTokenAddress(
+          dropletMintOld,
+          SOLVENT_ADMIN.publicKey,
+          true
+        );
 
       // Migrate droplets
       await provider.connection.confirmTransaction(
@@ -252,12 +253,12 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
           .migrateDroplets()
           .accounts({
             signer: holderKeypair.publicKey,
-            solventCrank: SOLVENT_ADMIN.publicKey,
+            solventMigrationCrank: SOLVENT_ADMIN.publicKey,
             dropletMintOld,
             dropletMintNew,
             signerDropletTokenAccountOld: holderDropletTokenAccountOld.address,
             signerDropletTokenAccountNew: holderDropletTokenAccountNew.address,
-            adminDropletTokenAccount,
+            solventMigrationCrankDropletTokenAccount,
           })
           .signers([holderKeypair])
           .rpc()
@@ -265,7 +266,12 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
 
       // Assert Solvent received the droplets
       expect(
-        (await getAccount(provider.connection, adminDropletTokenAccount)).amount
+        (
+          await getAccount(
+            provider.connection,
+            solventMigrationCrankDropletTokenAccount
+          )
+        ).amount
       ).to.equal(10000000000n * BigInt(index + 1));
 
       // Assert user lost v1 droplets
@@ -327,11 +333,12 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
         maliciousActorKeypair.publicKey
       );
 
-    const adminDropletTokenAccount = await getAssociatedTokenAddress(
-      invalidDropletMint,
-      SOLVENT_ADMIN.publicKey,
-      true
-    );
+    const solventMigrationCrankDropletTokenAccount =
+      await getAssociatedTokenAddress(
+        invalidDropletMint,
+        SOLVENT_ADMIN.publicKey,
+        true
+      );
 
     // Migrate droplets
     try {
@@ -340,13 +347,13 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
           .migrateDroplets()
           .accounts({
             signer: maliciousActorKeypair.publicKey,
-            solventCrank: SOLVENT_ADMIN.publicKey,
+            solventMigrationCrank: SOLVENT_ADMIN.publicKey,
             dropletMintOld: invalidDropletMint,
             dropletMintNew,
             signerDropletTokenAccountOld: maliciousActorDropletTokenAccountOld,
             signerDropletTokenAccountNew:
               maliciousActorDropletTokenAccountNew.address,
-            adminDropletTokenAccount,
+            solventMigrationCrankDropletTokenAccount,
           })
           .signers([maliciousActorKeypair])
           .rpc()

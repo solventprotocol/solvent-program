@@ -75,7 +75,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
             .checked_add(solvent_treasury_fee_amount as u64)
             .unwrap()
             == total_fee_amount,
-        SolventError::IncorrectFeeDistribution
+        SolventError::FeeDistributionIncorrect
     );
 
     // Transfer DISTRIBUTOR_FEE_PERCENTAGE % fee to distributor
