@@ -48,15 +48,57 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
         )?;
     }
 
-    // Send redeem// swap fee to Solvent treasury
-    let fee_amount = (DROPLETS_PER_NFT as u64)
+    // Calculate redeem/swap fee
+    let total_fee_amount = (DROPLETS_PER_NFT as u64)
         .checked_mul(LAMPORTS_PER_DROPLET as u64)
         .unwrap()
         .checked_mul(fee_basis_points as u64)
         .unwrap()
-        .checked_div(10000)
+        .checked_div(10_000_u64)
         .unwrap();
-    let transfer_fee_ctx = CpiContext::new(
+
+    let distributor_fee_amount = total_fee_amount
+        .checked_mul(DISTRIBUTOR_FEE_BASIS_POINTS as u64)
+        .unwrap()
+        .checked_div(10_000_u64)
+        .unwrap();
+
+    let solvent_treasury_fee_amount = total_fee_amount
+        .checked_mul(10_000_u64 - DISTRIBUTOR_FEE_BASIS_POINTS as u64)
+        .unwrap()
+        .checked_div(10_000_u64)
+        .unwrap();
+
+    // Ensure correct fee calculation
+    require!(
+        distributor_fee_amount
+            .checked_add(solvent_treasury_fee_amount as u64)
+            .unwrap()
+            == total_fee_amount,
+        SolventError::IncorrectFeeDistribution
+    );
+
+    // Transfer DISTRIBUTOR_FEE_PERCENTAGE % fee to distributor
+    let transfer_fee_distributor_ctx = CpiContext::new(
+        ctx.accounts.token_program.to_account_info().clone(),
+        token::Transfer {
+            from: ctx
+                .accounts
+                .signer_droplet_token_account
+                .to_account_info()
+                .clone(),
+            to: ctx
+                .accounts
+                .distributor_droplet_token_account
+                .to_account_info()
+                .clone(),
+            authority: ctx.accounts.signer.to_account_info().clone(),
+        },
+    );
+    token::transfer(transfer_fee_distributor_ctx, distributor_fee_amount)?;
+
+    // Transfer (100 - DISTRIBUTOR_FEE_PERCENTAGE) % fee to solvent treasury
+    let transfer_fee_treasury_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info().clone(),
         token::Transfer {
             from: ctx
@@ -72,7 +114,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
             authority: ctx.accounts.signer.to_account_info().clone(),
         },
     );
-    token::transfer(transfer_fee_ctx, fee_amount)?;
+    token::transfer(transfer_fee_treasury_ctx, solvent_treasury_fee_amount)?;
 
     // Get Solvent authority signer seeds
     let solvent_authority_bump = *ctx.bumps.get("solvent_authority").unwrap();
@@ -147,6 +189,17 @@ pub struct RedeemNft<'info> {
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_authority: UncheckedAccount<'info>,
 
+    /// CHECK: Safe because we are using this account just for a constraint
+    pub distributor: UncheckedAccount<'info>,
+
+    #[account(
+        init_if_needed,
+        payer = signer,
+        associated_token::mint = droplet_mint,
+        associated_token::authority = distributor
+    )]
+    pub distributor_droplet_token_account: Box<Account<'info, TokenAccount>>,
+
     #[account(
         mut,
         seeds = [
@@ -170,7 +223,7 @@ pub struct RedeemNft<'info> {
         has_one = nft_mint,
         has_one = droplet_mint
     )]
-    pub deposit_state: Account<'info, DepositState>,
+    pub deposit_state: Box<Account<'info, DepositState>>,
 
     #[account(
         init_if_needed,
@@ -183,12 +236,12 @@ pub struct RedeemNft<'info> {
         payer = signer,
         space = SwapState::LEN
     )]
-    pub swap_state: Account<'info, SwapState>,
+    pub swap_state: Box<Account<'info, SwapState>>,
 
     #[account(mut)]
-    pub droplet_mint: Account<'info, Mint>,
+    pub droplet_mint: Box<Account<'info, Mint>>,
 
-    pub nft_mint: Account<'info, Mint>,
+    pub nft_mint: Box<Account<'info, Mint>>,
 
     #[account(
         mut,
