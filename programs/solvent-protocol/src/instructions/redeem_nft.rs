@@ -189,7 +189,7 @@ pub struct RedeemNft<'info> {
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_authority: UncheckedAccount<'info>,
 
-    /// CHECK: Safe because there are enough constraints set
+    /// CHECK: Safe because we are using this account just for a constraint
     pub distributor: UncheckedAccount<'info>,
 
     #[account(
