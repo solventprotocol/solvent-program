@@ -33,6 +33,11 @@ pub const SOLVENT_LOCKERS_TREASURY: Pubkey =
     pubkey!("HkjFiwUW7qnREVm2PxBg8LUrCvjExrJjyYY51wsZTUK8");
 
 #[cfg(feature = "test-ids")]
+pub const SOLVENT_CRANK: Pubkey = pubkey!("DPnNwkEzRLxeL1k3ftkSYNgbUDaWyi37VQArW56v8xok");
+#[cfg(not(feature = "test-ids"))]
+pub const SOLVENT_CRANK: Pubkey = pubkey!("Hr4eSwCbeaFL1DVVDwPx18DGgnfQmYX6VkbXk66mYnnn");
+
+#[cfg(feature = "test-ids")]
 pub const SOLVENT_ADMIN: Pubkey = pubkey!("DPnNwkEzRLxeL1k3ftkSYNgbUDaWyi37VQArW56v8xok");
 #[cfg(not(feature = "test-ids"))]
-pub const SOLVENT_ADMIN: Pubkey = pubkey!("Hr4eSwCbeaFL1DVVDwPx18DGgnfQmYX6VkbXk66mYnnn");
+pub const SOLVENT_ADMIN: Pubkey = pubkey!("DYJXfxaci8NzfkHRZ87Ycfwp1CMMwssXcKeN8hWTbons");

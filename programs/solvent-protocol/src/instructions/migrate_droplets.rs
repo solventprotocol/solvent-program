@@ -79,9 +79,9 @@ pub struct MigrateDroplets<'info> {
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_authority: UncheckedAccount<'info>,
 
-    #[account(address = SOLVENT_ADMIN @ SolventError::SolventTreasuryInvalid)]
+    #[account(address = SOLVENT_CRANK @ SolventError::SolventTreasuryInvalid)]
     /// CHECK: Safe because this read-only account only gets used as a constraint
-    pub solvent_admin: UncheckedAccount<'info>,
+    pub solvent_crank: UncheckedAccount<'info>,
 
     #[account(
         seeds = [
@@ -115,7 +115,7 @@ pub struct MigrateDroplets<'info> {
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint_old,
-        associated_token::authority = solvent_admin,
+        associated_token::authority = solvent_crank,
     )]
     pub admin_droplet_token_account: Box<Account<'info, TokenAccount>>,
 

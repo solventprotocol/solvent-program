@@ -252,7 +252,7 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
           .migrateDroplets()
           .accounts({
             signer: holderKeypair.publicKey,
-            solventAdmin: SOLVENT_ADMIN.publicKey,
+            solventCrank: SOLVENT_ADMIN.publicKey,
             dropletMintOld,
             dropletMintNew,
             signerDropletTokenAccountOld: holderDropletTokenAccountOld.address,
@@ -340,7 +340,7 @@ describe("Migrating droplets from Solvent v1 to v2", () => {
           .migrateDroplets()
           .accounts({
             signer: maliciousActorKeypair.publicKey,
-            solventAdmin: SOLVENT_ADMIN.publicKey,
+            solventCrank: SOLVENT_ADMIN.publicKey,
             dropletMintOld: invalidDropletMint,
             dropletMintNew,
             signerDropletTokenAccountOld: maliciousActorDropletTokenAccountOld,
