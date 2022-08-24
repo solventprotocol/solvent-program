@@ -11,7 +11,6 @@ pub fn set_locking_enabled(ctx: Context<SetLockingEnabled>, flag: bool) -> Resul
     // Emit success event
     emit!(SetLockingEnabledEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
-        signer: ctx.accounts.signer.key(),
         flag
     });
 
@@ -39,7 +38,6 @@ pub struct SetLockingEnabled<'info> {
 
 #[event]
 pub struct SetLockingEnabledEvent {
-    pub signer: Pubkey,
     pub droplet_mint: Pubkey,
     pub flag: bool,
 }

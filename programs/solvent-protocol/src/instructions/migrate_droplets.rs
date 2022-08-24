@@ -58,6 +58,7 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
 
     // Emit success event
     emit!(MigrateDropletsEvent {
+        droplet_mint_old: ctx.accounts.droplet_mint_old.key(),
         droplet_mint_new: ctx.accounts.droplet_mint_new.key(),
         signer_droplet_token_account_old: ctx.accounts.signer_droplet_token_account_old.key(),
         signer_droplet_token_account_new: ctx.accounts.signer_droplet_token_account_new.key(),
@@ -129,6 +130,7 @@ pub struct MigrateDroplets<'info> {
 #[event]
 pub struct MigrateDropletsEvent {
     pub signer: Pubkey,
+    pub droplet_mint_old: Pubkey,
     pub droplet_mint_new: Pubkey,
     pub signer_droplet_token_account_old: Pubkey,
     pub signer_droplet_token_account_new: Pubkey,

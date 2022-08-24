@@ -17,7 +17,6 @@ pub fn update_staking_params(ctx: Context<UpdateStakingParams>) -> Result<()> {
     // Emit success event
     emit!(UpdateStakingParamsEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
-        signer: ctx.accounts.signer.key(),
         gembank_program: ctx.accounts.gembank_program.key(),
         gemfarm_program: ctx.accounts.gemfarm_program.key(),
         gemworks_farm: ctx.accounts.gemworks_farm.key(),
@@ -69,7 +68,6 @@ pub struct UpdateStakingParams<'info> {
 
 #[event]
 pub struct UpdateStakingParamsEvent {
-    pub signer: Pubkey,
     pub droplet_mint: Pubkey,
     pub gembank_program: Pubkey,
     pub gemfarm_program: Pubkey,

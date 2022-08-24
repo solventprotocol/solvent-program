@@ -136,6 +136,7 @@ pub fn unlock_nft(ctx: Context<UnlockNft>) -> Result<()> {
         signer: ctx.accounts.signer.key(),
         destination_nft_token_account: ctx.accounts.destination_nft_token_account.key(),
         signer_droplet_token_account: ctx.accounts.signer_droplet_token_account.key(),
+        interest
     });
 
     Ok(())
@@ -228,4 +229,5 @@ pub struct UnlockNftEvent {
     pub droplet_mint: Pubkey,
     pub signer_droplet_token_account: Pubkey,
     pub destination_nft_token_account: Pubkey,
+    pub interest: u64,
 }
