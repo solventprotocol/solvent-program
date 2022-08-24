@@ -8,6 +8,7 @@ pub const LIQUIDATION_REWARD_PERCENTAGE: u8 = 20;
 pub const DROPLETS_PER_NFT: u8 = 100;
 pub const REDEEM_FEE_BASIS_POINTS: u8 = 200;
 pub const SWAP_FEE_BASIS_POINTS: u8 = 50;
+pub const DISTRIBUTOR_FEE_BASIS_POINTS: u16 = 1000;
 
 // Seed strings
 pub const SOLVENT_AUTHORITY_SEED: &str = "authority-seed";
@@ -32,6 +33,11 @@ pub const SOLVENT_LOCKERS_TREASURY: Pubkey =
     pubkey!("HkjFiwUW7qnREVm2PxBg8LUrCvjExrJjyYY51wsZTUK8");
 
 #[cfg(feature = "test-ids")]
+pub const SOLVENT_MIGRATION_CRANK: Pubkey = pubkey!("DPnNwkEzRLxeL1k3ftkSYNgbUDaWyi37VQArW56v8xok");
+#[cfg(not(feature = "test-ids"))]
+pub const SOLVENT_MIGRATION_CRANK: Pubkey = pubkey!("Hr4eSwCbeaFL1DVVDwPx18DGgnfQmYX6VkbXk66mYnnn");
+
+#[cfg(feature = "test-ids")]
 pub const SOLVENT_ADMIN: Pubkey = pubkey!("DPnNwkEzRLxeL1k3ftkSYNgbUDaWyi37VQArW56v8xok");
 #[cfg(not(feature = "test-ids"))]
-pub const SOLVENT_ADMIN: Pubkey = pubkey!("Hr4eSwCbeaFL1DVVDwPx18DGgnfQmYX6VkbXk66mYnnn");
+pub const SOLVENT_ADMIN: Pubkey = pubkey!("DYJXfxaci8NzfkHRZ87Ycfwp1CMMwssXcKeN8hWTbons");

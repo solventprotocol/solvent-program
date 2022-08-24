@@ -55,4 +55,10 @@ pub enum SolventError {
 
     #[msg("You cannot redeem NFT as part of a swap because you haven't deposited one yet.")]
     SwapNotAllowed,
+
+    #[msg("There was an internal error while calculating fee distribution.")]
+    FeeDistributionIncorrect,
+
+    #[msg("The Solvent migration crank account entered by you is invalid.")]
+    SolventMigrationCrankInvalid,
 }

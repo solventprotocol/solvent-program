@@ -21,7 +21,7 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
                 .clone(),
             to: ctx
                 .accounts
-                .admin_droplet_token_account
+                .solvent_migration_crank_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
@@ -80,9 +80,9 @@ pub struct MigrateDroplets<'info> {
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_authority: UncheckedAccount<'info>,
 
-    #[account(address = SOLVENT_ADMIN @ SolventError::SolventTreasuryInvalid)]
+    #[account(address = SOLVENT_MIGRATION_CRANK @ SolventError::SolventMigrationCrankInvalid)]
     /// CHECK: Safe because this read-only account only gets used as a constraint
-    pub solvent_admin: UncheckedAccount<'info>,
+    pub solvent_migration_crank: UncheckedAccount<'info>,
 
     #[account(
         seeds = [
@@ -116,9 +116,9 @@ pub struct MigrateDroplets<'info> {
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint_old,
-        associated_token::authority = solvent_admin,
+        associated_token::authority = solvent_migration_crank,
     )]
-    pub admin_droplet_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_migration_crank_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     // Solana ecosystem program addresses
     pub system_program: Program<'info, System>,
