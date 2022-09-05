@@ -13,7 +13,6 @@ pub fn deposit_nft(
     swap: bool,
     _whitelist_proof: Option<Vec<[u8; 32]>>,
 ) -> Result<()> {
-
     if swap && ctx.accounts.swap_state.flag {
         return err!(SolventError::DepositNotAllowed);
     }

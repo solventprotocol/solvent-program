@@ -299,7 +299,6 @@ describe("Swapping NFTs", () => {
   });
 
   it("cannot deposit NFT with an already active swapState", async () => {
-
     let index = 3;
 
     let {
@@ -309,12 +308,13 @@ describe("Swapping NFTs", () => {
     } = nftInfos[index];
 
     // NFT holder's NFT accounts
-    let holderNftToDepositTokenAccount = await getOrCreateAssociatedTokenAccount(
+    let holderNftToDepositTokenAccount =
+      await getOrCreateAssociatedTokenAccount(
         provider.connection,
         holderKeypair,
         nftToDepositMint1,
         holderKeypair.publicKey
-    );
+      );
 
     // Solvent's NFT accounts
     let solventNftToDepositTokenAccount = await getAssociatedTokenAddress(
@@ -331,8 +331,10 @@ describe("Swapping NFTs", () => {
       holderKeypair.publicKey
     );
 
-    const solventTreasuryDropletTokenAccount =
-      await getAssociatedTokenAddress(dropletMint, SOLVENT_TREASURY);
+    const solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
+      dropletMint,
+      SOLVENT_TREASURY
+    );
     const solventTreasuryDropletTokenAccountBalance = await getBalance(
       provider.connection,
       solventNftToDepositTokenAccount
@@ -344,20 +346,19 @@ describe("Swapping NFTs", () => {
 
     // Deposit the first NFT for swap
     await program.methods
-        .depositNft(true, null)
-        .accounts({
-          signer: holderKeypair.publicKey,
-          dropletMint,
-          nftMint: nftToDepositMint1,
-          nftMetadata: nftToDepositMetadata1,
-          signerNftTokenAccount: holderNftToDepositTokenAccount.address,
-          solventNftTokenAccount: solventNftToDepositTokenAccount,
-          destinationDropletTokenAccount: holderDropletTokenAccount.address,
-        })
-        .signers([holderKeypair])
-        .rpc()
+      .depositNft(true, null)
+      .accounts({
+        signer: holderKeypair.publicKey,
+        dropletMint,
+        nftMint: nftToDepositMint1,
+        nftMetadata: nftToDepositMetadata1,
+        signerNftTokenAccount: holderNftToDepositTokenAccount.address,
+        solventNftTokenAccount: solventNftToDepositTokenAccount,
+        destinationDropletTokenAccount: holderDropletTokenAccount.address,
+      })
+      .signers([holderKeypair])
+      .rpc();
 
-    
     let {
       nftMintAddress: nftToDepositMint2,
       nftMetadataAddress: nftToDepositMetadata2,
@@ -381,20 +382,19 @@ describe("Swapping NFTs", () => {
     // Deposit the second NFT. should fail
     try {
       await program.methods
-          .depositNft(true, null)
-          .accounts({
-            signer: holderKeypair.publicKey,
-            dropletMint,
-            nftMint: nftToDepositMint2,
-            nftMetadata: nftToDepositMetadata2,
-            signerNftTokenAccount: holderNftToDepositTokenAccount.address,
-            solventNftTokenAccount: solventNftToDepositTokenAccount,
-            destinationDropletTokenAccount: holderDropletTokenAccount.address,
-          })
-          .signers([holderKeypair])
-          .rpc()
+        .depositNft(true, null)
+        .accounts({
+          signer: holderKeypair.publicKey,
+          dropletMint,
+          nftMint: nftToDepositMint2,
+          nftMetadata: nftToDepositMetadata2,
+          signerNftTokenAccount: holderNftToDepositTokenAccount.address,
+          solventNftTokenAccount: solventNftToDepositTokenAccount,
+          destinationDropletTokenAccount: holderDropletTokenAccount.address,
+        })
+        .signers([holderKeypair])
+        .rpc();
     } catch (error) {
-
       assert.include(
         error.message,
         "Cannot deposit additional NFT before closing all active swap states."
@@ -404,7 +404,6 @@ describe("Swapping NFTs", () => {
     expect.fail(
       "Program did not fail while depositing two NFTs back to back for swaps."
     );
-  
   });
 
   it("can redeem NFT with swap=false after depositing one with swap=true", async () => {
@@ -456,8 +455,10 @@ describe("Swapping NFTs", () => {
       holderKeypair.publicKey
     );
 
-    const solventTreasuryDropletTokenAccount =
-      await getAssociatedTokenAddress(dropletMint, SOLVENT_TREASURY);
+    const solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
+      dropletMint,
+      SOLVENT_TREASURY
+    );
     const solventTreasuryDropletTokenAccountBalance = await getBalance(
       provider.connection,
       solventTreasuryDropletTokenAccount

@@ -63,5 +63,5 @@ pub enum SolventError {
     SolventMigrationCrankInvalid,
 
     #[msg("Cannot deposit additional NFT before closing all active swap states.")]
-    DepositNotAllowed
+    DepositNotAllowed,
 }
