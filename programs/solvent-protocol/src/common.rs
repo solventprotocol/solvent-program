@@ -155,6 +155,7 @@ pub fn parse_farmer(info: &AccountInfo) -> Result<Farmer> {
     Farmer::try_deserialize(&mut data)
 }
 
+//#[soteria(ignore_redundant)]
 pub fn validate_bank(farm: &AccountInfo, bank: &AccountInfo) -> Result<bool> {
     let farm = parse_farm(farm)?;
     let result = farm.bank == bank.key();

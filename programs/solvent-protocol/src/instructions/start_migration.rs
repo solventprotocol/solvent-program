@@ -48,6 +48,7 @@ pub struct StartMigration<'info> {
     )]
     pub migration_state: Account<'info, MigrationState>,
 
+    //#[soteria(ignore_untrustful)]
     pub droplet_mint_old: Account<'info, Mint>,
 
     #[account(constraint = droplet_mint_new.mint_authority.unwrap() == solvent_authority.key())]
