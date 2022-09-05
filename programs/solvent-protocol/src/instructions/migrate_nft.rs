@@ -50,6 +50,7 @@ pub fn migrate_nft(
     emit!(MigrateNftEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
         nft_mint: ctx.accounts.nft_mint.key(),
+        signer_nft_token_account: ctx.accounts.signer_nft_token_account.key()
     });
 
     Ok(())
@@ -60,7 +61,7 @@ pub fn migrate_nft(
 pub struct MigrateNft<'info> {
     #[account(
         mut,
-        address = SOLVENT_CRANK @ SolventError::AdminAccessUnauthorized
+        address = SOLVENT_MIGRATION_CRANK @ SolventError::AdminAccessUnauthorized
     )]
     pub signer: Signer<'info>,
 
@@ -133,4 +134,5 @@ pub struct MigrateNft<'info> {
 pub struct MigrateNftEvent {
     pub droplet_mint: Pubkey,
     pub nft_mint: Pubkey,
+    pub signer_nft_token_account: Pubkey,
 }

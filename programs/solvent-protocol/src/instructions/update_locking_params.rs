@@ -28,7 +28,6 @@ pub fn update_locking_params(
     // Emit success event
     emit!(UpdateLockingParamsEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
-        signer: ctx.accounts.signer.key(),
         max_locker_duration,
         interest_scaler,
     });
@@ -57,7 +56,6 @@ pub struct UpdateLockingParams<'info> {
 
 #[event]
 pub struct UpdateLockingParamsEvent {
-    pub signer: Pubkey,
     pub droplet_mint: Pubkey,
     pub max_locker_duration: Option<u64>,
     pub interest_scaler: Option<u8>,

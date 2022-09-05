@@ -87,7 +87,8 @@ pub fn deposit_nft(
         nft_mint: ctx.accounts.nft_mint.key(),
         signer: ctx.accounts.signer.key(),
         signer_nft_token_account: ctx.accounts.signer_nft_token_account.key(),
-        destination_droplet_token_account: ctx.accounts.destination_droplet_token_account.key()
+        destination_droplet_token_account: ctx.accounts.destination_droplet_token_account.key(),
+        swap
     });
 
     Ok(())
@@ -190,4 +191,5 @@ pub struct DepositNftEvent {
     pub nft_mint: Pubkey,
     pub signer_nft_token_account: Pubkey,
     pub destination_droplet_token_account: Pubkey,
+    pub swap: bool,
 }

@@ -19,7 +19,6 @@ pub fn start_migration(ctx: Context<StartMigration>) -> Result<()> {
     emit!(StartMigrationEvent {
         droplet_mint_old: ctx.accounts.droplet_mint_old.key(),
         droplet_mint_new: ctx.accounts.droplet_mint_new.key(),
-        signer: ctx.accounts.signer.key()
     });
 
     Ok(())
@@ -60,7 +59,6 @@ pub struct StartMigration<'info> {
 
 #[event]
 pub struct StartMigrationEvent {
-    pub signer: Pubkey,
     pub droplet_mint_old: Pubkey,
     pub droplet_mint_new: Pubkey,
 }

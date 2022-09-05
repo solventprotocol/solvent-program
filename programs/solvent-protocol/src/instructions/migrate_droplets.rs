@@ -21,7 +21,7 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
                 .clone(),
             to: ctx
                 .accounts
-                .admin_droplet_token_account
+                .solvent_migration_crank_droplet_token_account
                 .to_account_info()
                 .clone(),
             authority: ctx.accounts.signer.to_account_info().clone(),
@@ -58,6 +58,7 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
 
     // Emit success event
     emit!(MigrateDropletsEvent {
+        droplet_mint_old: ctx.accounts.droplet_mint_old.key(),
         droplet_mint_new: ctx.accounts.droplet_mint_new.key(),
         signer_droplet_token_account_old: ctx.accounts.signer_droplet_token_account_old.key(),
         signer_droplet_token_account_new: ctx.accounts.signer_droplet_token_account_new.key(),
@@ -79,9 +80,9 @@ pub struct MigrateDroplets<'info> {
     /// CHECK: Safe because this read-only account only gets used as a constraint
     pub solvent_authority: UncheckedAccount<'info>,
 
-    #[account(address = SOLVENT_CRANK @ SolventError::SolventTreasuryInvalid)]
+    #[account(address = SOLVENT_MIGRATION_CRANK @ SolventError::SolventMigrationCrankInvalid)]
     /// CHECK: Safe because this read-only account only gets used as a constraint
-    pub solvent_crank: UncheckedAccount<'info>,
+    pub solvent_migration_crank: UncheckedAccount<'info>,
 
     #[account(
         seeds = [
@@ -115,9 +116,9 @@ pub struct MigrateDroplets<'info> {
         init_if_needed,
         payer = signer,
         associated_token::mint = droplet_mint_old,
-        associated_token::authority = solvent_crank,
+        associated_token::authority = solvent_migration_crank,
     )]
-    pub admin_droplet_token_account: Box<Account<'info, TokenAccount>>,
+    pub solvent_migration_crank_droplet_token_account: Box<Account<'info, TokenAccount>>,
 
     // Solana ecosystem program addresses
     pub system_program: Program<'info, System>,
@@ -129,6 +130,7 @@ pub struct MigrateDroplets<'info> {
 #[event]
 pub struct MigrateDropletsEvent {
     pub signer: Pubkey,
+    pub droplet_mint_old: Pubkey,
     pub droplet_mint_new: Pubkey,
     pub signer_droplet_token_account_old: Pubkey,
     pub signer_droplet_token_account_new: Pubkey,

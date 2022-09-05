@@ -104,7 +104,10 @@ pub fn lock_nft(
         nft_mint: ctx.accounts.nft_mint.key(),
         signer: ctx.accounts.signer.key(),
         signer_nft_token_account: ctx.accounts.signer_nft_token_account.key(),
-        destination_droplet_token_account: ctx.accounts.destination_droplet_token_account.key()
+        destination_droplet_token_account: ctx.accounts.destination_droplet_token_account.key(),
+        duration,
+        principal_amount: calculate_loan_result.principal_amount,
+        max_interest_payable: calculate_loan_result.max_interest_payable,
     });
 
     Ok(calculate_loan_result)
@@ -195,4 +198,7 @@ pub struct LockNftEvent {
     pub nft_mint: Pubkey,
     pub signer_nft_token_account: Pubkey,
     pub destination_droplet_token_account: Pubkey,
+    pub duration: u64,
+    pub principal_amount: u64,
+    pub max_interest_payable: u64,
 }

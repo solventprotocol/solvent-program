@@ -11,7 +11,6 @@ pub fn set_staking_enabled(ctx: Context<SetStakingEnabled>, flag: bool) -> Resul
     // Emit success event
     emit!(SetStakingEnabledEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
-        signer: ctx.accounts.signer.key(),
         flag
     });
 
@@ -39,7 +38,6 @@ pub struct SetStakingEnabled<'info> {
 
 #[event]
 pub struct SetStakingEnabledEvent {
-    pub signer: Pubkey,
     pub droplet_mint: Pubkey,
     pub flag: bool,
 }
