@@ -45,6 +45,7 @@ pub struct UpdateStakingParams<'info> {
     pub droplet_mint: Account<'info, Mint>,
 
     /// CHECK:
+    //#[soteria(ignore_untrustful)]
     #[account(
         owner = gemfarm_program.key(),
         constraint = validate_farm(&gemworks_farm)? @ SolventError::FarmConfigInvalid
@@ -52,14 +53,17 @@ pub struct UpdateStakingParams<'info> {
     pub gemworks_farm: UncheckedAccount<'info>,
 
     /// CHECK:
+    //#[soteria(ignore_untrustful)]
     #[account(executable)]
     pub gembank_program: UncheckedAccount<'info>,
 
     /// CHECK:
+    //#[soteria(ignore_untrustful)]
     #[account(executable)]
     pub gemfarm_program: UncheckedAccount<'info>,
 
     /// CHECK:
+    //#[soteria(ignore_untrustful)]
     pub gemworks_fee_account: UncheckedAccount<'info>,
 
     // Solana ecosystem program addresses
