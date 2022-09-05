@@ -66,7 +66,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
     let solvent_treasury_fee_amount = total_fee_amount
         .checked_sub(distributor_fee_amount)
         .unwrap();
-    
+
     // Ensure correct fee calculation
     require!(
         distributor_fee_amount
