@@ -64,9 +64,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
         .unwrap();
 
     let solvent_treasury_fee_amount = total_fee_amount
-        .checked_mul(10_000_u64 - DISTRIBUTOR_FEE_BASIS_POINTS as u64)
-        .unwrap()
-        .checked_div(10_000_u64)
+        .checked_sub(distributor_fee_amount)
         .unwrap();
 
     // Ensure correct fee calculation
