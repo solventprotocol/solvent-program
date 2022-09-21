@@ -58,7 +58,8 @@ export const mintNft = async (
   creator: anchor.web3.Keypair,
   destination: anchor.web3.PublicKey,
   collectionMint?: anchor.web3.PublicKey,
-  v1: boolean = false
+  v1: boolean = false,
+  sellerFeeBasisPoints: number = 10
 ) => {
   const mint = await createMint(
     provider.connection,
@@ -105,7 +106,7 @@ export const mintNft = async (
               data: {
                 name: "Pretty Cool NFT",
                 symbol,
-                sellerFeeBasisPoints: 10,
+                sellerFeeBasisPoints,
                 uri: "https://pretty-cool-nft.xyz/metadata",
                 creators: [
                   {
@@ -134,7 +135,7 @@ export const mintNft = async (
               data: {
                 name: "Pretty Cool NFT",
                 symbol,
-                sellerFeeBasisPoints: 10,
+                sellerFeeBasisPoints,
                 uri: "https://pretty-cool-nft.xyz/metadata",
                 creators: [
                   {
