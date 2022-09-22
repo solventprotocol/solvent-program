@@ -811,10 +811,11 @@ describe("Locking NFTs into lockers", () => {
         collectionCreatorKeypair.publicKey
       );
 
+      const holderKeypair = await createKeypair(provider);
+
       // 3 NFTs are minted from that collection, the last one with high royalty
       for (const i of [...Array(3).keys()]) {
         const creatorKeypair = await createKeypair(provider);
-        const holderKeypair = await createKeypair(provider);
         const { metadata: nftMetadataAddress, mint: nftMintAddress } =
           await mintNft(
             provider,
@@ -947,9 +948,7 @@ describe("Locking NFTs into lockers", () => {
       } = nftInfos[1];
 
       // NFT holder's NFT account
-      let holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
+      let holderNftTokenAccount = await getAssociatedTokenAddress(
         nftToDepositMint,
         holderKeypair.publicKey
       );
@@ -978,7 +977,7 @@ describe("Locking NFTs into lockers", () => {
             dropletMint,
             nftMint: nftToDepositMint,
             nftMetadata: nftToDepositMetadata,
-            signerNftTokenAccount: holderNftTokenAccount.address,
+            signerNftTokenAccount: holderNftTokenAccount,
             solventNftTokenAccount,
             destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
@@ -987,9 +986,7 @@ describe("Locking NFTs into lockers", () => {
       );
 
       // NFT holder's NFT account
-      holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
+      holderNftTokenAccount = await getAssociatedTokenAddress(
         nftToLockMint,
         holderKeypair.publicKey
       );
@@ -1001,24 +998,16 @@ describe("Locking NFTs into lockers", () => {
         true
       );
 
-      // The holder's droplet account
-      holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
-        dropletMint,
-        holderKeypair.publicKey
-      );
-
       try {
         // Lock NFT into a locker
         await program.methods
-          .lockNft(new anchor.BN(100), null)
+          .lockNft(new anchor.BN(10_000_000), null)
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
             nftMint: nftToLockMint,
             nftMetadata: nftToLockMetadata,
-            signerNftTokenAccount: holderNftTokenAccount.address,
+            signerNftTokenAccount: holderNftTokenAccount,
             solventNftTokenAccount,
             destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
@@ -1049,9 +1038,7 @@ describe("Locking NFTs into lockers", () => {
       } = nftInfos.at(-1);
 
       // NFT holder's NFT account
-      let holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
+      let holderNftTokenAccount = await getAssociatedTokenAddress(
         nftToDepositMint,
         holderKeypair.publicKey
       );
@@ -1080,7 +1067,7 @@ describe("Locking NFTs into lockers", () => {
             dropletMint,
             nftMint: nftToDepositMint,
             nftMetadata: nftToDepositMetadata,
-            signerNftTokenAccount: holderNftTokenAccount.address,
+            signerNftTokenAccount: holderNftTokenAccount,
             solventNftTokenAccount,
             destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
@@ -1089,9 +1076,7 @@ describe("Locking NFTs into lockers", () => {
       );
 
       // NFT holder's NFT account
-      holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
+      holderNftTokenAccount = await getAssociatedTokenAddress(
         nftToLockMint,
         holderKeypair.publicKey
       );
@@ -1103,14 +1088,6 @@ describe("Locking NFTs into lockers", () => {
         true
       );
 
-      // The holder's droplet account
-      holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
-        dropletMint,
-        holderKeypair.publicKey
-      );
-
       try {
         // Lock NFT into a locker
         await program.methods
@@ -1120,7 +1097,7 @@ describe("Locking NFTs into lockers", () => {
             dropletMint,
             nftMint: nftToLockMint,
             nftMetadata: nftToLockMetadata,
-            signerNftTokenAccount: holderNftTokenAccount.address,
+            signerNftTokenAccount: holderNftTokenAccount,
             solventNftTokenAccount,
             destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
