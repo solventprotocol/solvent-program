@@ -12,6 +12,7 @@ pub use stake_nft::*;
 pub use start_migration::*;
 pub use unlock_nft::*;
 pub use unstake_nft::*;
+pub use update_collection_info::*;
 pub use update_locking_params::*;
 pub use update_staking_params::*;
 
@@ -29,5 +30,6 @@ pub mod stake_nft;
 pub mod start_migration;
 pub mod unlock_nft;
 pub mod unstake_nft;
+pub mod update_collection_info;
 pub mod update_locking_params;
 pub mod update_staking_params;
