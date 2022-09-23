@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Added `modify_collection_info` admin instruction for modifying collection info of a bucket ([#29](https://github.com/solventprotocol/solvent-program/pull/29)).
+
 ## [1.2.0] - 2022-09-20
 
 ### Added
