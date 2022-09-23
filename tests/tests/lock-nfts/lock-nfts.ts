@@ -811,17 +811,20 @@ describe("Locking NFTs into lockers", () => {
         collectionCreatorKeypair.publicKey
       );
 
-      // 3 NFTs are minted from that collection
-      for (const i of Array(3)) {
+      const holderKeypair = await createKeypair(provider);
+
+      // 3 NFTs are minted from that collection, the last one with high royalty
+      for (const i of [...Array(3).keys()]) {
         const creatorKeypair = await createKeypair(provider);
-        const holderKeypair = await createKeypair(provider);
         const { metadata: nftMetadataAddress, mint: nftMintAddress } =
           await mintNft(
             provider,
             nftSymbol,
             creatorKeypair,
             holderKeypair.publicKey,
-            collectionMint
+            collectionMint,
+            false,
+            i === 2 ? 9500 : 100
           );
 
         // Collection authority verifies that the NFT belongs to the collection
@@ -934,19 +937,25 @@ describe("Locking NFTs into lockers", () => {
 
     it("fails to lock when duration is greater than max duration", async () => {
       // Deposit 1 NFT so that bucket is not empty
-      let { nftMintAddress, nftMetadataAddress, holderKeypair } = nftInfos[0];
+      const {
+        nftMintAddress: nftToDepositMint,
+        nftMetadataAddress: nftToDepositMetadata,
+        holderKeypair,
+      } = nftInfos[0];
+      const {
+        nftMintAddress: nftToLockMint,
+        nftMetadataAddress: nftToLockMetadata,
+      } = nftInfos[1];
 
       // NFT holder's NFT account
-      let holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
-        nftMintAddress,
+      let holderNftTokenAccount = await getAssociatedTokenAddress(
+        nftToDepositMint,
         holderKeypair.publicKey
       );
 
       // Bucket's NFT account, a PDA owned by the Solvent program
-      const solventNftTokenAccount = await getAssociatedTokenAddress(
-        nftMintAddress,
+      let solventNftTokenAccount = await getAssociatedTokenAddress(
+        nftToDepositMint,
         solventAuthorityAddress,
         true
       );
@@ -966,9 +975,9 @@ describe("Locking NFTs into lockers", () => {
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
-            nftMint: nftMintAddress,
-            nftMetadata: nftMetadataAddress,
-            signerNftTokenAccount: holderNftTokenAccount.address,
+            nftMint: nftToDepositMint,
+            nftMetadata: nftToDepositMetadata,
+            signerNftTokenAccount: holderNftTokenAccount,
             solventNftTokenAccount,
             destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
@@ -977,19 +986,16 @@ describe("Locking NFTs into lockers", () => {
       );
 
       // NFT holder's NFT account
-      holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
-        nftMintAddress,
+      holderNftTokenAccount = await getAssociatedTokenAddress(
+        nftToLockMint,
         holderKeypair.publicKey
       );
 
-      // The holder's droplet account
-      holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        holderKeypair,
-        dropletMint,
-        holderKeypair.publicKey
+      // Bucket's NFT account, a PDA owned by the Solvent program
+      solventNftTokenAccount = await getAssociatedTokenAddress(
+        nftToLockMint,
+        solventAuthorityAddress,
+        true
       );
 
       try {
@@ -999,9 +1005,9 @@ describe("Locking NFTs into lockers", () => {
           .accounts({
             signer: holderKeypair.publicKey,
             dropletMint,
-            nftMint: nftMintAddress,
-            nftMetadata: nftMetadataAddress,
-            signerNftTokenAccount: holderNftTokenAccount.address,
+            nftMint: nftToLockMint,
+            nftMetadata: nftToLockMetadata,
+            signerNftTokenAccount: holderNftTokenAccount,
             solventNftTokenAccount,
             destinationDropletTokenAccount: holderDropletTokenAccount.address,
           })
@@ -1011,6 +1017,96 @@ describe("Locking NFTs into lockers", () => {
         assert.include(
           error.message,
           "Locking duration entered by you is too long."
+        );
+        return;
+      }
+      expect.fail(
+        "Program did not fail while locking NFT with too long duration"
+      );
+    });
+
+    it("fails to lock stolen NFT", async () => {
+      // Deposit 1 NFT so that bucket is not empty
+      const {
+        nftMintAddress: nftToDepositMint,
+        nftMetadataAddress: nftToDepositMetadata,
+        holderKeypair,
+      } = nftInfos[0];
+      const {
+        nftMintAddress: nftToLockMint,
+        nftMetadataAddress: nftToLockMetadata,
+      } = nftInfos.at(-1);
+
+      // NFT holder's NFT account
+      let holderNftTokenAccount = await getAssociatedTokenAddress(
+        nftToDepositMint,
+        holderKeypair.publicKey
+      );
+
+      // Bucket's NFT account, a PDA owned by the Solvent program
+      let solventNftTokenAccount = await getAssociatedTokenAddress(
+        nftToDepositMint,
+        solventAuthorityAddress,
+        true
+      );
+
+      // The holder's droplet account
+      let holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
+        provider.connection,
+        holderKeypair,
+        dropletMint,
+        holderKeypair.publicKey
+      );
+
+      // Deposit NFT into Solvent
+      await provider.connection.confirmTransaction(
+        await program.methods
+          .depositNft(false, null)
+          .accounts({
+            signer: holderKeypair.publicKey,
+            dropletMint,
+            nftMint: nftToDepositMint,
+            nftMetadata: nftToDepositMetadata,
+            signerNftTokenAccount: holderNftTokenAccount,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
+          })
+          .signers([holderKeypair])
+          .rpc()
+      );
+
+      // NFT holder's NFT account
+      holderNftTokenAccount = await getAssociatedTokenAddress(
+        nftToLockMint,
+        holderKeypair.publicKey
+      );
+
+      // Bucket's NFT account, a PDA owned by the Solvent program
+      solventNftTokenAccount = await getAssociatedTokenAddress(
+        nftToLockMint,
+        solventAuthorityAddress,
+        true
+      );
+
+      try {
+        // Lock NFT into a locker
+        await program.methods
+          .lockNft(new anchor.BN(100), null)
+          .accounts({
+            signer: holderKeypair.publicKey,
+            dropletMint,
+            nftMint: nftToLockMint,
+            nftMetadata: nftToLockMetadata,
+            signerNftTokenAccount: holderNftTokenAccount,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
+          })
+          .signers([holderKeypair])
+          .rpc();
+      } catch (error) {
+        assert.include(
+          error.message,
+          "NFT is banned from Solvent because it's likely stolen."
         );
         return;
       }

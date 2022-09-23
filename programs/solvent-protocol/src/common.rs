@@ -99,6 +99,12 @@ pub fn verify_collection(
     }
 }
 
+// Check if NFT's royalties are more than 90%, implying the NFT is stolen and thus banned
+pub fn is_nft_banned(metadata: &AccountInfo) -> bool {
+    let metadata = Metadata::from_account_info(metadata).unwrap();
+    metadata.data.seller_fee_basis_points >= SELLER_FEE_BASIS_POINTS_THRESHOLD_FOR_BAN
+}
+
 #[derive(PartialEq, Eq, Debug)]
 pub struct CalculateLoanArgs {
     pub max_locker_duration: u64,

@@ -62,6 +62,9 @@ pub enum SolventError {
     #[msg("The Solvent migration crank account entered by you is invalid.")]
     SolventMigrationCrankInvalid,
 
-    #[msg("Cannot deposit additional NFT before closing all active swap states.")]
-    DepositNotAllowed,
+    #[msg("Cannot deposit additional NFT before completing the pending swap.")]
+    SwapPending,
+
+    #[msg("NFT is banned from Solvent because it's likely stolen.")]
+    NftBanned,
 }

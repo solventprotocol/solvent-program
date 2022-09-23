@@ -13,8 +13,9 @@ pub fn deposit_nft(
     swap: bool,
     _whitelist_proof: Option<Vec<[u8; 32]>>,
 ) -> Result<()> {
+    // Prevent deposits when there's a pending swap
     if swap && ctx.accounts.swap_state.flag {
-        return err!(SolventError::DepositNotAllowed);
+        return err!(SolventError::SwapPending);
     }
 
     // Set DepositState account contents
@@ -156,7 +157,8 @@ pub struct DepositNft<'info> {
     #[account(
         address = mpl_token_metadata::pda::find_metadata_account(&nft_mint.key()).0,
         constraint = mpl_token_metadata::check_id(nft_metadata.owner),
-        constraint = verify_collection(&nft_metadata, &bucket_state.collection_info, whitelist_proof) @ SolventError::CollectionVerificationFailed
+        constraint = verify_collection(&nft_metadata, &bucket_state.collection_info, whitelist_proof) @ SolventError::CollectionVerificationFailed,
+        constraint = !is_nft_banned(&nft_metadata) @ SolventError::NftBanned
     )]
     /// CHECK: Safe because there are already enough constraints
     pub nft_metadata: UncheckedAccount<'info>,

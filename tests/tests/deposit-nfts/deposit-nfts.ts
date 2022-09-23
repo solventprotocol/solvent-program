@@ -639,4 +639,123 @@ describe("Depositing NFTs into bucket", () => {
       bucketStateAddress = undefined;
     });
   });
+
+  describe("Metaplex version agnostic", () => {
+    let dropletMint: anchor.web3.PublicKey;
+    let nftInfo: NftInfo;
+
+    beforeEach(async () => {
+      // Create the collection NFT
+      const collectionCreatorKeypair = await createKeypair(provider);
+      const { mint: collectionMint } = await mintNft(
+        provider,
+        nftSymbol,
+        collectionCreatorKeypair,
+        collectionCreatorKeypair.publicKey
+      );
+
+      // An NFT with high seller fee is minted from that collection
+      const creatorKeypair = await createKeypair(provider);
+      const holderKeypair = await createKeypair(provider);
+      const { metadata: nftMetadataAddress, mint: nftMintAddress } =
+        await mintNft(
+          provider,
+          nftSymbol,
+          creatorKeypair,
+          holderKeypair.publicKey,
+          collectionMint,
+          false,
+          9500
+        );
+
+      // Collection authority verifies that the NFT belongs to the collection
+      await verifyCollection(
+        provider,
+        nftMintAddress,
+        collectionMint,
+        collectionCreatorKeypair
+      );
+
+      // Set public vars' values
+      nftInfo = {
+        nftMintAddress,
+        nftMetadataAddress,
+        holderKeypair,
+      };
+
+      const bucketCreatorKeypair = await createKeypair(provider);
+
+      const dropletMintKeypair = await createKeypair(provider);
+      dropletMint = dropletMintKeypair.publicKey;
+
+      // Create bucket on Solvent
+      await provider.connection.confirmTransaction(
+        await program.methods
+          // @ts-ignore
+          .createBucket({ v2: { collectionMint } })
+          .accounts({
+            signer: bucketCreatorKeypair.publicKey,
+            dropletMint,
+          })
+          .signers([dropletMintKeypair, bucketCreatorKeypair])
+          .rpc()
+      );
+    });
+
+    it("fails to deposit stolen NFT", async () => {
+      const { nftMintAddress, nftMetadataAddress, holderKeypair } = nftInfo;
+
+      // NFT holder's NFT account
+      let holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
+        provider.connection,
+        holderKeypair,
+        nftMintAddress,
+        holderKeypair.publicKey
+      );
+
+      // Solvent's NFT account, a PDA owned by the Solvent program
+      const solventNftTokenAccount = await getAssociatedTokenAddress(
+        nftMintAddress,
+        solventAuthorityAddress,
+        true
+      );
+
+      // The holder's droplet account
+      let holderDropletTokenAccount = await getOrCreateAssociatedTokenAccount(
+        provider.connection,
+        holderKeypair,
+        dropletMint,
+        holderKeypair.publicKey
+      );
+
+      try {
+        // Lock NFT into a locker
+        await program.methods
+          .depositNft(false, null)
+          .accounts({
+            signer: holderKeypair.publicKey,
+            dropletMint,
+            nftMint: nftMintAddress,
+            nftMetadata: nftMetadataAddress,
+            signerNftTokenAccount: holderNftTokenAccount.address,
+            solventNftTokenAccount,
+            destinationDropletTokenAccount: holderDropletTokenAccount.address,
+          })
+          .signers([holderKeypair])
+          .rpc();
+      } catch (error) {
+        assert.include(
+          error.message,
+          "NFT is banned from Solvent because it's likely stolen."
+        );
+        return;
+      }
+      expect.fail("Program did not fail while depositing banned NFT.");
+    });
+
+    afterEach(() => {
+      dropletMint = undefined;
+      nftInfo = undefined;
+    });
+  });
 });

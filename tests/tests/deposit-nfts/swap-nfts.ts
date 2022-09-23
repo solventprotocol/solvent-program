@@ -298,14 +298,16 @@ describe("Swapping NFTs", () => {
     }
   });
 
-  it("cannot deposit NFT with an already active swapState", async () => {
-    let index = 3;
-
-    let {
+  it("cannot deposit NFT with an already active SwapState", async () => {
+    const {
       nftMintAddress: nftToDepositMint1,
       nftMetadataAddress: nftToDepositMetadata1,
       holderKeypair,
-    } = nftInfos[index];
+    } = nftInfos[3];
+    const {
+      nftMintAddress: nftToDepositMint2,
+      nftMetadataAddress: nftToDepositMetadata2,
+    } = nftInfos[4];
 
     // NFT holder's NFT accounts
     let holderNftToDepositTokenAccount =
@@ -331,19 +333,6 @@ describe("Swapping NFTs", () => {
       holderKeypair.publicKey
     );
 
-    const solventTreasuryDropletTokenAccount = await getAssociatedTokenAddress(
-      dropletMint,
-      SOLVENT_TREASURY
-    );
-    const solventTreasuryDropletTokenAccountBalance = await getBalance(
-      provider.connection,
-      solventNftToDepositTokenAccount
-    );
-
-    const bucketState = await program.account.bucketStateV3.fetch(
-      bucketStateAddress
-    );
-
     // Deposit the first NFT for swap
     await program.methods
       .depositNft(true, null)
@@ -358,11 +347,6 @@ describe("Swapping NFTs", () => {
       })
       .signers([holderKeypair])
       .rpc();
-
-    let {
-      nftMintAddress: nftToDepositMint2,
-      nftMetadataAddress: nftToDepositMetadata2,
-    } = nftInfos[index + 1];
 
     // NFT holder's NFT accounts
     holderNftToDepositTokenAccount = await getOrCreateAssociatedTokenAccount(
@@ -397,7 +381,7 @@ describe("Swapping NFTs", () => {
     } catch (error) {
       assert.include(
         error.message,
-        "Cannot deposit additional NFT before closing all active swap states."
+        "Cannot deposit additional NFT before completing the pending swap."
       );
       return;
     }
@@ -407,15 +391,12 @@ describe("Swapping NFTs", () => {
   });
 
   it("can redeem NFT with swap=false after depositing one with swap=true", async () => {
-    let index = 3;
-
-    let {
+    const {
       nftMintAddress: nftToDepositMint,
       nftMetadataAddress: nftToDepositMetadata,
       holderKeypair,
-    } = nftInfos[index];
-
-    const { nftMintAddress: nftToRedeemMint } = nftInfos[index - 1];
+    } = nftInfos[3];
+    const { nftMintAddress: nftToRedeemMint } = nftInfos[2];
 
     // NFT holder's NFT accounts
     const holderNftToDepositTokenAccount =
