@@ -1,33 +1,13 @@
-use crate::common::CollectionInfo;
+use crate::common::*;
 use crate::constants::*;
-use crate::errors::*;
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token};
 
 // Create a bucket for an NFT collection
 pub fn create_bucket(ctx: Context<CreateBucket>, collection_info: CollectionInfo) -> Result<()> {
-    match collection_info {
-        CollectionInfo::V1 {
-            ref symbol,
-            ref verified_creators,
-            whitelist_root: _,
-        } => {
-            // Check if symbol is too long
-            require!(
-                // Max string length is 8, so UTF-8 encoded max byte length is 32
-                symbol.len() <= 8 * 4,
-                SolventError::CollectionSymbolInvalid
-            );
-
-            // Check if there are 1-5 verified creators
-            require!(
-                !verified_creators.is_empty() && verified_creators.len() <= 5,
-                SolventError::VerifiedCreatorsInvalid
-            )
-        }
-        CollectionInfo::V2 { collection_mint: _ } => {}
-    };
+    // Make sure collection info is valid
+    validate_collection_info(&collection_info)?;
 
     // Update BucketState account with information
     **ctx.accounts.bucket_state = BucketStateV3 {

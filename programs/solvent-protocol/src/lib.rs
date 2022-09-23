@@ -105,4 +105,11 @@ pub mod solvent_protocol {
     pub fn claim_balance(ctx: Context<ClaimBalance>) -> Result<()> {
         instructions::claim_balance(ctx)
     }
+
+    pub fn update_collection_info(
+        ctx: Context<UpdateCollectionInfo>,
+        collection_info: CollectionInfo,
+    ) -> Result<()> {
+        instructions::update_collection_info(ctx, collection_info)
+    }
 }

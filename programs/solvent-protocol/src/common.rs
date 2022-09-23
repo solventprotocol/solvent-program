@@ -1,4 +1,5 @@
 use crate::constants::*;
+use crate::errors::SolventError;
 use anchor_lang::prelude::*;
 use gem_farm::state::{Farm, Farmer};
 use mpl_token_metadata::state::Metadata;
@@ -21,6 +22,33 @@ pub enum CollectionInfo {
 impl CollectionInfo {
     // 1 + largest variant: 1 String of 8 chars, 1 Vev<Pubkey>, 1 hash of 32 bytes
     pub const LEN: usize = 1 + (4 + 32) + (4 + (32 * 5)) + 32;
+}
+
+// Validate if a collection info is valid
+pub fn validate_collection_info(collection_info: &CollectionInfo) -> Result<()> {
+    match collection_info {
+        CollectionInfo::V1 {
+            ref symbol,
+            ref verified_creators,
+            whitelist_root: _,
+        } => {
+            // Check if symbol is too long
+            require!(
+                // Max string length is 8, so UTF-8 encoded max byte length is 32
+                symbol.len() <= 8 * 4,
+                SolventError::CollectionSymbolInvalid
+            );
+
+            // Check if there are 1-5 verified creators
+            require!(
+                !verified_creators.is_empty() && verified_creators.len() <= 5,
+                SolventError::VerifiedCreatorsInvalid
+            )
+        }
+        CollectionInfo::V2 { collection_mint: _ } => {}
+    };
+
+    Ok(())
 }
 
 // Verify in the NFT belongs to the collection
