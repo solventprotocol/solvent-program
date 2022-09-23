@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changes
 
-- Emit more data in events ([#29](https://github.com/solventprotocol/solvent-program/pull/29)).
+- Emit more info in events ([#31](https://github.com/solventprotocol/solvent-program/pull/31)).
 
 ### Added
 
