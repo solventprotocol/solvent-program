@@ -170,7 +170,8 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
         signer: ctx.accounts.signer.key(),
         destination_nft_token_account: ctx.accounts.destination_nft_token_account.key(),
         signer_droplet_token_account: ctx.accounts.signer_droplet_token_account.key(),
-        swap
+        swap,
+        num_nfts_in_bucket: ctx.accounts.bucket_state.num_nfts_in_bucket
     });
 
     Ok(())
@@ -287,4 +288,6 @@ pub struct RedeemNftEvent {
     pub signer_droplet_token_account: Pubkey,
     pub destination_nft_token_account: Pubkey,
     pub swap: bool,
+    // Counters
+    pub num_nfts_in_bucket: u16,
 }

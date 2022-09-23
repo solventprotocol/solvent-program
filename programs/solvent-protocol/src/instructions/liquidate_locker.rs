@@ -101,6 +101,14 @@ pub fn liquidate_locker(ctx: Context<LiquidateLocker>) -> Result<()> {
         nft_mint: ctx.accounts.nft_mint.key(),
         signer: ctx.accounts.signer.key(),
         signer_droplet_token_account: ctx.accounts.signer_droplet_token_account.key(),
+        // LockerState params
+        creation_timestamp: ctx.accounts.locker_state.creation_timestamp,
+        duration: ctx.accounts.locker_state.duration,
+        principal_amount: ctx.accounts.locker_state.principal_amount,
+        max_interest_payable: ctx.accounts.locker_state.max_interest_payable,
+        // Counters
+        num_nfts_in_bucket: ctx.accounts.bucket_state.num_nfts_in_bucket,
+        num_nfts_in_lockers: ctx.accounts.bucket_state.num_nfts_in_lockers,
     });
 
     Ok(())
@@ -198,4 +206,12 @@ pub struct LiquidateLockerEvent {
     pub nft_mint: Pubkey,
     pub droplet_mint: Pubkey,
     pub signer_droplet_token_account: Pubkey,
+    // LockerState params
+    pub creation_timestamp: u64,
+    pub duration: u64,
+    pub principal_amount: u64,
+    pub max_interest_payable: u64,
+    // Counters
+    pub num_nfts_in_bucket: u16,
+    pub num_nfts_in_lockers: u16,
 }

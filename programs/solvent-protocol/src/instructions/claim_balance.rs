@@ -33,6 +33,7 @@ pub fn claim_balance(ctx: Context<ClaimBalance>) -> Result<()> {
     // Emit success event
     emit!(ClaimBalanceEvent {
         signer: ctx.accounts.signer.key(),
+        sol_amount_claimed: amount_to_claim
     });
 
     Ok(())
@@ -66,4 +67,5 @@ pub struct ClaimBalance<'info> {
 #[event]
 pub struct ClaimBalanceEvent {
     pub signer: Pubkey,
+    pub sol_amount_claimed: u64,
 }

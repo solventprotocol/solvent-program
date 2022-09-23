@@ -136,7 +136,15 @@ pub fn unlock_nft(ctx: Context<UnlockNft>) -> Result<()> {
         signer: ctx.accounts.signer.key(),
         destination_nft_token_account: ctx.accounts.destination_nft_token_account.key(),
         signer_droplet_token_account: ctx.accounts.signer_droplet_token_account.key(),
-        interest
+        interest,
+        // LockerState params
+        creation_timestamp: ctx.accounts.locker_state.creation_timestamp,
+        duration: ctx.accounts.locker_state.duration,
+        principal_amount: ctx.accounts.locker_state.principal_amount,
+        max_interest_payable: ctx.accounts.locker_state.max_interest_payable,
+        // Counters
+        num_nfts_in_bucket: ctx.accounts.bucket_state.num_nfts_in_bucket,
+        num_nfts_in_lockers: ctx.accounts.bucket_state.num_nfts_in_lockers,
     });
 
     Ok(())
@@ -230,4 +238,12 @@ pub struct UnlockNftEvent {
     pub signer_droplet_token_account: Pubkey,
     pub destination_nft_token_account: Pubkey,
     pub interest: u64,
+    // LockerState params
+    pub creation_timestamp: u64,
+    pub duration: u64,
+    pub principal_amount: u64,
+    pub max_interest_payable: u64,
+    // Counters
+    pub num_nfts_in_bucket: u16,
+    pub num_nfts_in_lockers: u16,
 }
