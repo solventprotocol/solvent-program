@@ -93,7 +93,9 @@ pub fn deposit_nft(
         signer: ctx.accounts.signer.key(),
         signer_nft_token_account: ctx.accounts.signer_nft_token_account.key(),
         destination_droplet_token_account: ctx.accounts.destination_droplet_token_account.key(),
-        swap
+        swap,
+        // Counters
+        num_nfts_in_bucket: ctx.accounts.bucket_state.num_nfts_in_bucket,
     });
 
     Ok(())
@@ -198,4 +200,6 @@ pub struct DepositNftEvent {
     pub signer_nft_token_account: Pubkey,
     pub destination_droplet_token_account: Pubkey,
     pub swap: bool,
+    // Counters
+    pub num_nfts_in_bucket: u16,
 }

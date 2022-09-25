@@ -87,13 +87,14 @@ pub fn lock_nft(
 
     // Update LockerState account with information
     let clock: Clock = Clock::get().unwrap();
+    let creation_timestamp = clock.unix_timestamp as u64;
     *ctx.accounts.locker_state = LockerState {
         bump: *ctx.bumps.get("locker_state").unwrap(),
         droplet_mint: ctx.accounts.droplet_mint.key(),
         depositor: ctx.accounts.signer.key(),
         nft_mint: ctx.accounts.nft_mint.key(),
         duration,
-        creation_timestamp: clock.unix_timestamp as u64,
+        creation_timestamp,
         principal_amount: calculate_loan_result.principal_amount,
         max_interest_payable: calculate_loan_result.max_interest_payable,
     };
@@ -105,9 +106,16 @@ pub fn lock_nft(
         signer: ctx.accounts.signer.key(),
         signer_nft_token_account: ctx.accounts.signer_nft_token_account.key(),
         destination_droplet_token_account: ctx.accounts.destination_droplet_token_account.key(),
+        // LockerState params
+        creation_timestamp,
         duration,
         principal_amount: calculate_loan_result.principal_amount,
         max_interest_payable: calculate_loan_result.max_interest_payable,
+        // BucketState params
+        interest_scaler: ctx.accounts.bucket_state.interest_scaler,
+        max_locker_duration: ctx.accounts.bucket_state.max_locker_duration,
+        num_nfts_in_bucket: ctx.accounts.bucket_state.num_nfts_in_bucket,
+        num_nfts_in_lockers: ctx.accounts.bucket_state.num_nfts_in_lockers
     });
 
     Ok(calculate_loan_result)
@@ -199,6 +207,13 @@ pub struct LockNftEvent {
     pub nft_mint: Pubkey,
     pub signer_nft_token_account: Pubkey,
     pub destination_droplet_token_account: Pubkey,
+    // BucketState params
+    pub num_nfts_in_bucket: u16,
+    pub num_nfts_in_lockers: u16,
+    pub interest_scaler: u8,
+    pub max_locker_duration: u64,
+    // LockerState params
+    pub creation_timestamp: u64,
     pub duration: u64,
     pub principal_amount: u64,
     pub max_interest_payable: u64,

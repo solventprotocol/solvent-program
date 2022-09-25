@@ -38,6 +38,7 @@ pub fn unstake_nft(ctx: Context<UnstakeNft>) -> Result<()> {
 
     let farmer = parse_farmer(&ctx.accounts.gemworks_farmer)?;
     let clock: Clock = Clock::get().unwrap();
+    let mut is_unstaking_complete = false;
 
     // If NFT is staked: unstake once and put it into cooldown period
     if farmer.state == FarmerState::Staked {
@@ -232,6 +233,9 @@ pub fn unstake_nft(ctx: Context<UnstakeNft>) -> Result<()> {
             gemworks_reward_a_pot_bump,
             gemworks_reward_b_pot_bump,
         )?;
+
+        is_unstaking_complete = true;
+
     // This branch means the cooldown is still pending, so return an error
     } else if farmer.state == FarmerState::PendingCooldown {
         return err!(SolventError::StakingCooldownPending);
@@ -253,11 +257,32 @@ pub fn unstake_nft(ctx: Context<UnstakeNft>) -> Result<()> {
         farmer_authority_signer_seeds,
     )?;
 
+    // Calculate rewards claimed
+    let initial_reward_a_amount = ctx.accounts.farmer_reward_a_token_account.amount;
+    let initial_reward_b_amount = ctx.accounts.farmer_reward_b_token_account.amount;
+    ctx.accounts.farmer_reward_a_token_account.reload()?;
+    ctx.accounts.farmer_reward_b_token_account.reload()?;
+    let reward_a_claimed = ctx
+        .accounts
+        .farmer_reward_a_token_account
+        .amount
+        .checked_sub(initial_reward_a_amount)
+        .unwrap();
+    let reward_b_claimed = ctx
+        .accounts
+        .farmer_reward_b_token_account
+        .amount
+        .checked_sub(initial_reward_b_amount)
+        .unwrap();
+
     // Emit success event
     emit!(UnstakeNftEvent {
         droplet_mint: ctx.accounts.droplet_mint.key(),
         signer: ctx.accounts.signer.key(),
-        nft_mint: ctx.accounts.nft_mint.key()
+        nft_mint: ctx.accounts.nft_mint.key(),
+        is_unstaking_complete,
+        reward_a_claimed,
+        reward_b_claimed
     });
 
     Ok(())
@@ -495,4 +520,7 @@ pub struct UnstakeNftEvent {
     pub signer: Pubkey,
     pub droplet_mint: Pubkey,
     pub nft_mint: Pubkey,
+    pub is_unstaking_complete: bool,
+    pub reward_a_claimed: u64,
+    pub reward_b_claimed: u64,
 }

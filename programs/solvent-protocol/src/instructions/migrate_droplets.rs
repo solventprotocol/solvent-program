@@ -10,6 +10,8 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 
 // Take old droplets from user and mint to him new droplets in exchange
 pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
+    let droplets_to_migrate = ctx.accounts.signer_droplet_token_account_old.amount;
+
     // Transfer old droplets from signer's account to the treasury account
     let transfer_droplets_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info().clone(),
@@ -27,10 +29,7 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
             authority: ctx.accounts.signer.to_account_info().clone(),
         },
     );
-    token::transfer(
-        transfer_droplets_ctx,
-        ctx.accounts.signer_droplet_token_account_old.amount,
-    )?;
+    token::transfer(transfer_droplets_ctx, droplets_to_migrate)?;
 
     // Get Solvent authority signer seeds
     let solvent_authority_bump = *ctx.bumps.get("solvent_authority").unwrap();
@@ -51,10 +50,7 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
         },
         solvent_authority_signer_seeds,
     );
-    token::mint_to(
-        mint_droplets_ctx,
-        ctx.accounts.signer_droplet_token_account_old.amount,
-    )?;
+    token::mint_to(mint_droplets_ctx, droplets_to_migrate)?;
 
     // Emit success event
     emit!(MigrateDropletsEvent {
@@ -62,7 +58,8 @@ pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
         droplet_mint_new: ctx.accounts.droplet_mint_new.key(),
         signer_droplet_token_account_old: ctx.accounts.signer_droplet_token_account_old.key(),
         signer_droplet_token_account_new: ctx.accounts.signer_droplet_token_account_new.key(),
-        signer: ctx.accounts.signer.key()
+        signer: ctx.accounts.signer.key(),
+        droplet_amount_migrated: droplets_to_migrate
     });
 
     Ok(())
@@ -134,4 +131,5 @@ pub struct MigrateDropletsEvent {
     pub droplet_mint_new: Pubkey,
     pub signer_droplet_token_account_old: Pubkey,
     pub signer_droplet_token_account_new: Pubkey,
+    pub droplet_amount_migrated: u64,
 }
