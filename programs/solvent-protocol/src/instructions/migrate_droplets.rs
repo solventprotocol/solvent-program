@@ -10,6 +10,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount};
 
 // Take old droplets from user and mint to him new droplets in exchange
 pub fn migrate_droplets(ctx: Context<MigrateDroplets>) -> Result<()> {
+    //#[soteria(ignore)]
     let droplets_to_migrate = ctx.accounts.signer_droplet_token_account_old.amount;
 
     // Transfer old droplets from signer's account to the treasury account
