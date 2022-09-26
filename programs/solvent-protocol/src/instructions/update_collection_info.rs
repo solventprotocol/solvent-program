@@ -31,13 +31,6 @@ pub struct UpdateCollectionInfo<'info> {
     pub signer: Signer<'info>,
 
     #[account(
-        seeds = [SOLVENT_AUTHORITY_SEED.as_bytes()],
-        bump,
-    )]
-    /// CHECK: Safe because this read-only account only gets used as a constraint
-    pub solvent_authority: UncheckedAccount<'info>,
-
-    #[account(
         mut,
         seeds = [
             droplet_mint.key().as_ref(),
