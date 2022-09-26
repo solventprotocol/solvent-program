@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Block stolen NFTs from Solvent by checking if its `sellerFeeBasisPoints >= 9500` ([#28](https://github.com/solventprotocol/solvent-program/pull/28)).
+- Block stolen NFTs from Solvent by checking if its `sellerFeeBasisPoints >= 9500` ([#28](https://github.com/solventprotocol/solvent-program/pull/28), [#34](https://github.com/solventprotocol/solvent-program/pull/34)).
 - Added `modify_collection_info` admin instruction for modifying collection info of a bucket ([#29](https://github.com/solventprotocol/solvent-program/pull/29)).
 
 ### Changes
