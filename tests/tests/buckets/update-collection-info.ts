@@ -327,12 +327,12 @@ describe("Updating collection info", () => {
         .rpc()
     );
 
-    // Ensure user lost 102 droplets for the NFT redeemed
+    // Ensure user lost 100 droplets for the NFT redeemed
     holderDropletTokenAccount = await getAccount(
       provider.connection,
       holderDropletTokenAccount.address
     );
-    expect(holderDropletTokenAccount.amount).to.equal(BigInt(98 * 100000000));
+    expect(holderDropletTokenAccount.amount).to.equal(BigInt(100 * 100000000));
   });
 
   it("fails to update collection info when signer is not Solvent admin", async () => {

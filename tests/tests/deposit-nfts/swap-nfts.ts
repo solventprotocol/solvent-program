@@ -486,14 +486,14 @@ describe("Swapping NFTs", () => {
         .rpc()
     );
 
-    // Ensure user lost 102 droplets
+    // Ensure user lost 100 droplets
     expect(
       holderDropletTokenAccount.amount -
         (await getBalance(
           provider.connection,
           holderDropletTokenAccount.address
         ))
-    ).to.equal(BigInt(102 * 100000000));
+    ).to.equal(BigInt(100 * 100000000));
 
     // Ensure Solvent received fee
     expect(
@@ -501,7 +501,7 @@ describe("Swapping NFTs", () => {
         provider.connection,
         solventTreasuryDropletTokenAccount
       )) - solventTreasuryDropletTokenAccountBalance
-    ).to.equal(BigInt(2 * 100000000));
+    ).to.equal(BigInt(0 * 100000000));
 
     // Ensure user does not have the deposited NFT
     expect(

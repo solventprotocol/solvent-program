@@ -210,7 +210,7 @@ describe("Redeeming NFTs from bucket", () => {
           .rpc()
       );
 
-      // Ensure user burned 102 droplets
+      // Ensure user burned 100 droplets
       expect(
         holderDropletTokenAccount.amount -
           (
@@ -219,7 +219,7 @@ describe("Redeeming NFTs from bucket", () => {
               holderDropletTokenAccount.address
             )
           ).amount
-      ).to.equal(102n * LAMPORTS_PER_DROPLET);
+      ).to.equal(100n * LAMPORTS_PER_DROPLET);
 
       // Ensure user received 1 NFT
       holderNftTokenAccount = await getOrCreateAssociatedTokenAccount(
