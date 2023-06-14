@@ -65,24 +65,12 @@ pub mod solvent_protocol {
         instructions::update_locking_params(ctx, max_locker_duration, interest_scaler)
     }
 
-    pub fn update_staking_params(ctx: Context<UpdateStakingParams>) -> Result<()> {
-        instructions::update_staking_params(ctx)
-    }
-
     pub fn set_locking_enabled(ctx: Context<SetLockingEnabled>, flag: bool) -> Result<()> {
         instructions::set_locking_enabled(ctx, flag)
     }
 
     pub fn set_staking_enabled(ctx: Context<SetStakingEnabled>, flag: bool) -> Result<()> {
         instructions::set_staking_enabled(ctx, flag)
-    }
-
-    pub fn stake_nft(ctx: Context<StakeNft>) -> Result<()> {
-        instructions::stake_nft(ctx)
-    }
-
-    pub fn unstake_nft(ctx: Context<UnstakeNft>) -> Result<()> {
-        instructions::unstake_nft(ctx)
     }
 
     // Create the migration state account

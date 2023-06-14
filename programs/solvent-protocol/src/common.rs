@@ -1,8 +1,7 @@
 use crate::constants::*;
 use crate::errors::SolventError;
 use anchor_lang::prelude::*;
-use gem_farm::state::{Farm, Farmer};
-use mpl_token_metadata::state::Metadata;
+use mpl_token_metadata::state::{Metadata, TokenMetadataAccount};
 
 // Collection info, required to verify if an NFT belongs to a collection
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
@@ -177,30 +176,4 @@ pub fn verify_proof(proof: Vec<[u8; 32]>, root: [u8; 32], leaf: [u8; 32]) -> boo
     }
     // Check if the computed hash (root) is equal to the provided root
     computed_hash == root
-}
-
-fn parse_farm(info: &AccountInfo) -> Result<Farm> {
-    let mut data: &[u8] = &info.try_borrow_data()?;
-    Farm::try_deserialize(&mut data)
-}
-
-pub fn parse_farmer(info: &AccountInfo) -> Result<Farmer> {
-    let mut data: &[u8] = &info.try_borrow_data()?;
-    Farmer::try_deserialize(&mut data)
-}
-
-//#[soteria(ignore_redundant)]
-pub fn validate_bank(farm: &AccountInfo, bank: &AccountInfo) -> Result<bool> {
-    let farm = parse_farm(farm)?;
-    let result = farm.bank == bank.key();
-    Ok(result)
-}
-
-// Assert farm's config is sane and suitable for staking
-pub fn validate_farm(info: &AccountInfo) -> Result<bool> {
-    let farm = parse_farm(info)?;
-    let is_valid = farm.config.min_staking_period_sec == 0
-        && farm.config.cooldown_period_sec == 0
-        && (farm.config.unstaking_fee_lamp == 0 || farm.config.unstaking_fee_lamp >= 890880);
-    Ok(is_valid)
 }

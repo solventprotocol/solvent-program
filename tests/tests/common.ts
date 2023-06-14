@@ -2,9 +2,6 @@ import * as anchor from "@project-serum/anchor";
 import { resolve } from "path";
 import { readFileSync } from "fs";
 import { SolventProtocol } from "../../target/types/solvent_protocol";
-import * as gemFarmIdl from "../idls/gem_farm.json";
-import * as gemBankIdl from "../idls/gem_bank.json";
-import { GemBankClient, GemFarmClient } from "@gemworks/gem-farm-ts";
 import { default as smbMintStrings } from "../nft-mints/smb.json";
 
 export const BUCKET_SEED = Buffer.from("bucket-seed-v3");
@@ -37,29 +34,6 @@ export const provider = anchor.getProvider() as anchor.AnchorProvider;
 
 export const program = anchor.workspace
   .SolventProtocol as anchor.Program<SolventProtocol>;
-
-export const getGemFarm = (
-  gemFarmProgramId: anchor.web3.PublicKey,
-  gemBankProgramId: anchor.web3.PublicKey
-) =>
-  new GemFarmClient(
-    provider.connection,
-    provider.wallet as anchor.Wallet,
-    // @ts-ignore
-    gemFarmIdl,
-    gemFarmProgramId,
-    gemBankIdl,
-    gemBankProgramId
-  );
-
-export const getGemBank = (gemBankProgramId: anchor.web3.PublicKey) =>
-  new GemBankClient(
-    provider.connection,
-    provider.wallet as anchor.Wallet,
-    // @ts-ignore
-    gemBankIdl,
-    gemBankProgramId
-  );
 
 export interface NftInfo {
   nftMintAddress: anchor.web3.PublicKey;
