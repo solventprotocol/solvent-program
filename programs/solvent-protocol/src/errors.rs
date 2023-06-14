@@ -67,4 +67,10 @@ pub enum SolventError {
 
     #[msg("NFT is banned from Solvent because it's likely stolen.")]
     NftBanned,
+
+    #[msg("Invalid SysvarInstruction")]
+    InvalidSysvarInstruction,
+    
+    #[msg("Invalid MPLTokenMetadata")]
+    InvalidMPLTokenMetadata,
 }

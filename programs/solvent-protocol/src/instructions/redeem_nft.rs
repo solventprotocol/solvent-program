@@ -6,6 +6,13 @@ use anchor_spl::associated_token::get_associated_token_address;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token;
 use anchor_spl::token::{Mint, Token, TokenAccount};
+use solana_program::sysvar;
+// use mpl_token_auth_rules::payload::{PayloadType, SeedsVec, Payload};
+// use mpl_token_metadata::instruction::InstructionBuilder;
+// use mpl_token_metadata::instruction::builders::TransferBuilder;
+// use mpl_token_metadata::processor::AuthorizationData;
+// use mpl_token_metadata::instruction::TransferArgs;
+// use solana_program::program::invoke_signed;
 
 // Burn droplets and redeem an NFT from the bucket in exchange
 pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
@@ -118,6 +125,63 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
     let solvent_authority_bump = *ctx.bumps.get("solvent_authority").unwrap();
     let solvent_authority_seeds = &[SOLVENT_AUTHORITY_SEED.as_bytes(), &[solvent_authority_bump]];
     let solvent_authority_signer_seeds = &[&solvent_authority_seeds[..]];
+
+    // let mpl_transfer_accounts = [
+    //     ctx.accounts.token_program.to_account_info().clone(),
+    //     ctx.accounts.associated_token_program.to_account_info().clone(),
+    //     ctx.accounts.system_program.to_account_info().clone(),
+    //     ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
+    //     ctx.accounts.solvent_authority.to_account_info().clone(),
+    //     ctx.accounts.destination_nft_token_account.to_account_info().clone(),
+    //     ctx.accounts.signer.to_account_info().clone(),
+    //     ctx.accounts.nft_mint.to_account_info().clone(),
+    //     ctx.accounts.nft_metadata.to_account_info().clone(),
+    //     ctx.accounts.sysvar_instructions.to_account_info().clone(),
+    //     ctx.accounts.token_metadata_program.to_account_info().clone(),
+    // ];
+
+    // let mpl_transfer = TransferBuilder::new()
+    //     .token(ctx.accounts.solvent_nft_token_account.key())
+    //     .token_owner(ctx.accounts.solvent_authority.key())
+    //     .destination(ctx.accounts.destination_nft_token_account.key())
+    //     .destination_owner(ctx.accounts.signer.key())
+    //     .mint(ctx.accounts.nft_mint.key())
+    //     .metadata(ctx.accounts.nft_metadata.key())
+    //     .authority(ctx.accounts.signer.key())
+    //     .payer(ctx.accounts.signer.key())
+    //     .sysvar_instructions(ctx.accounts.sysvar_instructions.key())
+    //     .system_program(ctx.accounts.system_program.key())
+    //     .spl_token_program(ctx.accounts.token_program.key())
+    //     .spl_ata_program(ctx.accounts.associated_token_program.key())
+    //     .build(TransferArgs::V1 { 
+    //         amount: 1,
+    //         authorization_data: Some(AuthorizationData {
+    //             payload: Payload::from([
+    //                 ("Amount".to_string(), PayloadType::Number(1)),
+    //                 (
+    //                     "Authority".to_string(),
+    //                     PayloadType::Pubkey(*ctx.accounts.signer.key),
+    //                 ),
+    //                 (
+    //                     "AuthoritySeeds".to_string(),
+    //                     PayloadType::Seeds(SeedsVec {
+    //                         seeds: vec![
+    //                             SOLVENT_AUTHORITY_SEED.as_bytes().to_vec(),
+    //                             [solvent_authority_bump].to_vec(),
+    //                         ],
+    //                     }),
+    //                 ),
+    //             ]),
+    //         })
+    //     })
+    //     .unwrap()
+    //     .instruction();
+
+    // invoke_signed(
+    //     &mpl_transfer, 
+    //     &mpl_transfer_accounts, 
+    //     solvent_authority_signer_seeds
+    // )?;
 
     // Transfer NFT to destination account
     let transfer_nft_ctx = CpiContext::new_with_signer(
@@ -244,6 +308,13 @@ pub struct RedeemNft<'info> {
     pub nft_mint: Box<Account<'info, Mint>>,
 
     #[account(
+        address = mpl_token_metadata::pda::find_metadata_account(&nft_mint.key()).0,
+        constraint = mpl_token_metadata::check_id(nft_metadata.owner),
+    )]
+    /// CHECK: Safe because there are already enough constraints
+    pub nft_metadata: UncheckedAccount<'info>,
+
+    #[account(
         mut,
         address = get_associated_token_address(solvent_authority.key, &nft_mint.key()),
     )]
@@ -278,6 +349,15 @@ pub struct RedeemNft<'info> {
     pub system_program: Program<'info, System>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub rent: Sysvar<'info, Rent>,
+
+    #[account(address = sysvar::instructions::id() @ SolventError::InvalidSysvarInstruction)]
+    /// CHECK: Safe because there are enough constraints set
+    pub sysvar_instructions: UncheckedAccount<'info>,
+
+    #[account(address = mpl_token_metadata::id() @ SolventError::InvalidMPLTokenMetadata)]
+    /// CHECK: Safe because there are enough constraints set
+    pub token_metadata_program: UncheckedAccount<'info>,
+
 }
 
 #[event]

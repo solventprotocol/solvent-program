@@ -5,3 +5,4 @@ docker-target
 node_modules
 .crates
 .vscode
+*.log
