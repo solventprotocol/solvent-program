@@ -32,6 +32,8 @@ pub const MIGRATION_SEED: &str = "migration-seed";
 pub const SOLVENT_CORE_TREASURY: Pubkey = pubkey!("45nueWN9Qwn5vDBmJGBLEsYvaJG6vrNmNdCyrntXDk2K");
 pub const SOLVENT_LOCKERS_TREASURY: Pubkey =
     pubkey!("HkjFiwUW7qnREVm2PxBg8LUrCvjExrJjyYY51wsZTUK8");
+pub const METAPLEX_AUTH_RULES: Pubkey = pubkey!("eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9");
+pub const METAPLEX_AUTH_RULES_PROGRAM: Pubkey = pubkey!("auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg");
 
 #[cfg(feature = "test-ids")]
 pub const SOLVENT_MIGRATION_CRANK: Pubkey = pubkey!("DPnNwkEzRLxeL1k3ftkSYNgbUDaWyi37VQArW56v8xok");

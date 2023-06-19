@@ -1,5 +1,7 @@
 import * as anchor from "@project-serum/anchor";
 import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
   getAccount,
   getAssociatedTokenAddress,
   getOrCreateAssociatedTokenAccount,
@@ -15,9 +17,11 @@ import {
   LAMPORTS_PER_DROPLET,
   SOLVENT_CORE_TREASURY as SOLVENT_TREASURY,
   SOLVENT_ADMIN,
+  METAPLEX_AUTH_RULES,
 } from "../common";
+import { PROGRAM_ID as METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
 
-describe("Redeeming NFTs from bucket", () => {
+describe("yoyo Redeeming NFTs from bucket", () => {
   const nftSymbol = "DAPE";
 
   let solventAuthorityAddress: anchor.web3.PublicKey;
@@ -182,6 +186,16 @@ describe("Redeeming NFTs from bucket", () => {
         holderKeypair.publicKey
       );
 
+      const [tokenMetadataAddress] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from("metadata"),
+          METADATA_PROGRAM_ID.toBuffer(),
+          nftMintAddress.toBuffer(),
+        ],
+        METADATA_PROGRAM_ID
+      );
+      console.log("tokenMetadata: ", tokenMetadataAddress.toString());
+
       const solventTreasuryDropletTokenAccount =
         await getAssociatedTokenAddress(dropletMint, SOLVENT_TREASURY, true);
 
@@ -190,25 +204,45 @@ describe("Redeeming NFTs from bucket", () => {
       );
       const numNftsInBucket = bucketState.numNftsInBucket;
 
-      // Redeem NFT
-      await provider.connection.confirmTransaction(
-        await program.methods
-          .redeemNft(false)
-          .accounts({
-            signer: holderKeypair.publicKey,
-            distributor: SOLVENT_TREASURY,
-            distributorDropletTokenAccount: solventTreasuryDropletTokenAccount,
-            dropletMint,
-            nftMint: nftMintAddress,
-            solventNftTokenAccount,
-            solventTreasury: SOLVENT_TREASURY,
-            solventTreasuryDropletTokenAccount,
-            destinationNftTokenAccount: holderNftTokenAccount.address,
-            signerDropletTokenAccount: holderDropletTokenAccount.address,
-          })
-          .signers([holderKeypair])
-          .rpc()
-      );
+      try {
+        
+        let reqUnits = anchor.web3.ComputeBudgetProgram.requestUnits({
+          units: 1_400_000,
+          additionalFee: 100,
+        });
+
+        // Redeem NFT
+        await provider.connection.confirmTransaction(
+          await program.methods
+            .redeemNft(false)
+            .accounts({
+              signer: holderKeypair.publicKey,
+              distributor: SOLVENT_TREASURY,
+              distributorDropletTokenAccount: solventTreasuryDropletTokenAccount,
+              dropletMint,
+              nftMint: nftMintAddress,
+              nftMetadata: tokenMetadataAddress,
+              authRules: METAPLEX_AUTH_RULES,
+              solventNftTokenAccount,
+              solventTreasury: SOLVENT_TREASURY,
+              solventTreasuryDropletTokenAccount,
+              destinationNftTokenAccount: holderNftTokenAccount.address,
+              signerDropletTokenAccount: holderDropletTokenAccount.address,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+              tokenMetadataProgram: METADATA_PROGRAM_ID,
+              sysvarInstructions: new anchor.web3.PublicKey("Sysvar1nstructions1111111111111111111111111")
+            })
+            .signers([holderKeypair])
+            .preInstructions([
+              reqUnits
+            ])
+            .rpc()
+        );
+      }
+      catch(err) {
+        console.log("error redeem: ", err);
+      }
 
       // Ensure user burned 100 droplets
       expect(

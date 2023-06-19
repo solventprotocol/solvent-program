@@ -19,6 +19,13 @@ export const SOLVENT_LOCKERS_TREASURY = new anchor.web3.PublicKey(
 export const SOLVENT_V1_PROGRAM_ID = new anchor.web3.PublicKey(
   "nft3agWJsaL1nN7pERYDFJUf54BzDZwS3oRbEzjrq6q"
 );
+export const METAPLEX_AUTH_RULES = new anchor.web3.PublicKey(
+  "eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9"
+);
+export const METAPLEX_AUTH_RULES_PROGRAM = new anchor.web3.PublicKey(
+  "auth9SigNpDKz4sJJ1DfCTuZrZNSAgh9sFD3rboVmgg"
+);
+
 export const SOLVENT_ADMIN = anchor.web3.Keypair.fromSecretKey(
   Buffer.from(
     JSON.parse(

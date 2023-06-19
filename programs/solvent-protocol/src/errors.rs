@@ -73,4 +73,7 @@ pub enum SolventError {
     
     #[msg("Invalid MPLTokenMetadata")]
     InvalidMPLTokenMetadata,
+
+    #[msg("Invalid MPLAuthRulesProgram")]
+    InvalidMPLAuthRulesProgram,
 }
