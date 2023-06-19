@@ -156,6 +156,10 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
     else {
         msg!("pnfts transfer");
 
+        msg!("owner token record: {}", ctx.accounts.owner_token_record.owner);
+
+        msg!("destination token record: {}", ctx.accounts.destination_token_record.owner);
+
         let mpl_transfer_accounts = [
             ctx.accounts.token_program.to_account_info().clone(),
             ctx.accounts.associated_token_program.to_account_info().clone(),
@@ -165,9 +169,12 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
             ctx.accounts.solvent_nft_token_account.to_account_info().clone(),
             ctx.accounts.solvent_authority.to_account_info().clone(),
             ctx.accounts.destination_nft_token_account.to_account_info().clone(),
+            ctx.accounts.owner_token_record.to_account_info().clone(),
+            ctx.accounts.destination_token_record.to_account_info().clone(),
             ctx.accounts.signer.to_account_info().clone(),
             ctx.accounts.nft_mint.to_account_info().clone(),
             ctx.accounts.nft_metadata.to_account_info().clone(),
+            ctx.accounts.nft_master_edition.to_account_info().clone(),
             ctx.accounts.sysvar_instructions.to_account_info().clone(),
             ctx.accounts.token_metadata_program.to_account_info().clone(),
         ];
@@ -179,8 +186,11 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
             .destination_owner(ctx.accounts.signer.key())
             .mint(ctx.accounts.nft_mint.key())
             .metadata(ctx.accounts.nft_metadata.key())
-            .authority(ctx.accounts.signer.key())
+            .edition(ctx.accounts.nft_master_edition.key())
+            .authority(ctx.accounts.solvent_authority.key())
             .payer(ctx.accounts.signer.key())
+            .owner_token_record(ctx.accounts.owner_token_record.key())
+            .destination_token_record(ctx.accounts.destination_token_record.key())
             .sysvar_instructions(ctx.accounts.sysvar_instructions.key())
             .system_program(ctx.accounts.system_program.key())
             .spl_token_program(ctx.accounts.token_program.key())
@@ -201,7 +211,7 @@ pub fn redeem_nft(ctx: Context<RedeemNft>, swap: bool) -> Result<()> {
                             PayloadType::Seeds(SeedsVec {
                                 seeds: vec![
                                     SOLVENT_AUTHORITY_SEED.as_bytes().to_vec(),
-                                    [solvent_authority_bump].to_vec(),
+                                    vec![solvent_authority_bump],
                                 ],
                             }),
                         ),
@@ -300,7 +310,7 @@ pub struct RedeemNft<'info> {
             DEPOSIT_SEED.as_bytes()
         ],
         bump = deposit_state.bump,
-        close = signer,
+        // close = signer,
         has_one = nft_mint,
         has_one = droplet_mint
     )]
@@ -331,6 +341,14 @@ pub struct RedeemNft<'info> {
     )]
     /// CHECK: Safe because there are already enough constraints
     pub nft_metadata: UncheckedAccount<'info>,
+
+    #[account(
+        mut,
+        address = mpl_token_metadata::pda::find_master_edition_account(&nft_mint.key()).0,
+        constraint = mpl_token_metadata::check_id(nft_metadata.owner),
+    )]
+    /// CHECK: Safe because there are already enough constraints
+    pub nft_master_edition: UncheckedAccount<'info>,
 
     #[account(
       address = METAPLEX_AUTH_RULES  
@@ -384,8 +402,15 @@ pub struct RedeemNft<'info> {
 
     #[account(address = METAPLEX_AUTH_RULES_PROGRAM @ SolventError::InvalidMPLAuthRulesProgram)]
     /// CHECK: Safe because there are enough constraints set
-    pub metaplex_auth_rules_program: UncheckedAccount<'info>
+    pub metaplex_auth_rules_program: UncheckedAccount<'info>,
 
+    #[account(mut)]
+    /// CHECK: Safe because there are no constraints needed
+    pub owner_token_record: UncheckedAccount<'info>,
+
+    #[account(mut)]
+    /// CHECK: Safe because there are no constraints needed
+    pub destination_token_record: UncheckedAccount<'info>,
 }
 
 #[event]
